@@ -14,8 +14,6 @@ def calculate_spine_deviation(shoulder, hip):
     horizontal_deviation = abs(shoulder_x - hip_x)
     return horizontal_deviation
 
-#test
-
 # Setup Mediapipe instance
 with mp_pose.Pose(min_detection_confidence=0.6, min_tracking_confidence=0.6) as pose:
     cap = cv2.VideoCapture(1)  # Webcam feed
