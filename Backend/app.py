@@ -7,7 +7,7 @@ app = Flask(__name__)
 def run_script():
     try:
         # Start the model script as a separate process
-        subprocess.Popen(['python3', 'model.py'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        subprocess.Popen(['python3', 'test.py'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         return jsonify({'message': 'Model script launched successfully'}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
