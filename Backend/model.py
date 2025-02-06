@@ -35,8 +35,8 @@ with mp_pose.Pose(min_detection_confidence = 0.6, min_tracking_confidence = 0.6)
         mp_drawing.draw_landmarks(image, 
                                   results.pose_landmarks, 
                                   mp_pose.POSE_CONNECTIONS,
-                                  mp_drawing.DrawingSpec(color=(0,0,255), thickness=8, circle_radius=8),
-                                  mp_drawing.DrawingSpec(color=(0,255,0), thickness=7, circle_radius=7)
+                                  mp_drawing.DrawingSpec(color=(0,0,255), thickness=3, circle_radius=5),
+                                  mp_drawing.DrawingSpec(color=(0,255,0), thickness=3, circle_radius=5)
                                   )
 
 
@@ -66,3 +66,7 @@ def calculate_angles(a,b,c):
         angle = 360-angle
 
     return angle
+
+
+shoulder = [landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].x, landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].y]
+print(shoulder)
