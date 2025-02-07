@@ -20,6 +20,8 @@ Routes for the API, this file can and will be refactored to a more organized str
 """
 
 # CRUD Endpoints
+
+# Create a new client
 @app.route('/api/clients', methods=['POST'])
 def create_client():
     data = request.json
@@ -42,6 +44,7 @@ def create_client():
         return jsonify({'error': str(e)}), 400
     
 
+# Get all clients
 @app.route('/api/clients', methods=['GET'])
 def get_clients():
     clients = Client.query.all()
@@ -58,6 +61,7 @@ def get_clients():
     } for client in clients])
 
 
+# Get a single client by its ID
 @app.route('/api/clients/<int:id>', methods=['GET'])
 def get_client(id):
     client = Client.query.get_or_404(id)
@@ -74,6 +78,7 @@ def get_client(id):
     })
 
 
+# Update a client by its ID
 @app.route('/api/clients/<int:id>', methods=['PUT'])
 def update_client(id):
     client = Client.query.get_or_404(id)
@@ -96,6 +101,7 @@ def update_client(id):
         return jsonify({'error': str(e)}), 400
 
 
+# Delete a client by its ID
 @app.route('/api/clients/<int:id>', methods=['DELETE'])
 def delete_client(id):
     client = Client.query.get_or_404(id)
