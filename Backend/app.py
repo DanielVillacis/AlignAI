@@ -3,6 +3,7 @@ import subprocess
 
 app = Flask(__name__)
 
+# route to run the model script
 @app.route('/run-script', methods=['GET'])
 def run_script():
     try:
