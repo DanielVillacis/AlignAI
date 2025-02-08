@@ -1,5 +1,5 @@
-<div class="container">
-  <form [formGroup]="clientForm" (ngSubmit)="onSubmit()" class="client-form">
+<div class="container fade-in">
+  <form [formGroup]="clientForm" class="client-form">
     <h1 class="fade-in">Client Registration</h1>
 
     <div class="form-row">
@@ -54,8 +54,8 @@
     </div>
     
     <div class="buttons-container">
-      <button type="submit" class="button-74">Create Client</button>
-      <button class="button-74" (click)="executeScript()">Start a Scan</button>
+      <!-- <button type="submit" class="button-74">Create Client</button> -->
+      <button class="button-28" (click)="executeScript()">Start a Scan</button>
     </div>
   </form>
 </div>

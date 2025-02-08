@@ -1,28 +1,34 @@
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #1e1e1e, #3e3e3e);
-    color: #ffffff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-  }
-  
-  .container {
-    text-align: center;
-  }
-  
-  .fade-in {
-    animation: fadeIn 1s ease-in-out;
-  }
-  
-  @keyframes fadeIn {
-    0% { opacity: 0; }
-    100% { opacity: 1; }
-  }
+.fade-in {
+  animation: fadeIn 0.7s ease-in-out;
+}
 
-  .content {
-    margin-left: 220px;
-    padding: 20px;
-  }
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.content {
+  margin-left: 220px;
+  padding: 20px;
+  text-align: center;
+  animation: fadeIn 1s ease-in-out; // apply fade-in to whole component
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+th {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 2px solid #ccc; /* line under the headers */
+  font-weight: bold;
+}
+
+td {
+  padding: 12px;
+  text-align: left;
+  border: none;
+}
