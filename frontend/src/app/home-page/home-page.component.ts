@@ -21,9 +21,14 @@ export class HomePageComponent implements OnInit {
 
   getClients() {
     this.http.get<any[]>('http://127.0.0.1:5000/api/clients')
-      .subscribe(
-        (data) => { this.clients = data; },
-        (error) => { console.error("Error fetching clients", error); }
+      .subscribe({
+        next: (data) => {
+          this.clients = data;
+        },
+        error: (error) => {
+          console.error('There was an error!', error);
+        }
+      }
       );
   }
 }
