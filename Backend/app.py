@@ -47,7 +47,7 @@ def create_client():
 # Get all clients
 @app.route('/api/clients', methods=['GET'])
 def get_clients():
-    clients = Client.query.all()
+    clients = db.session.query(Client).all()
     return jsonify([{
         'id': client.id,
         'first_name': client.first_name,
@@ -64,7 +64,7 @@ def get_clients():
 # Get a single client by its ID
 @app.route('/api/clients/<int:id>', methods=['GET'])
 def get_client(id):
-    client = Client.query.get_or_404(id)
+    client = db.session.query(Client).get_or_404(id)
     return jsonify({
         'id': client.id,
         'first_name': client.first_name,
@@ -81,7 +81,7 @@ def get_client(id):
 # Update a client by its ID
 @app.route('/api/clients/<int:id>', methods=['PUT'])
 def update_client(id):
-    client = Client.query.get_or_404(id)
+    client = db.session.query(Client).get_or_404(id)
     data = request.json
     
     client.first_name = data.get('first_name', client.first_name)
@@ -104,7 +104,7 @@ def update_client(id):
 # Delete a client by its ID
 @app.route('/api/clients/<int:id>', methods=['DELETE'])
 def delete_client(id):
-    client = Client.query.get_or_404(id)
+    client = db.session.query(Client).get_or_404(id)
     try:
         db.session.delete(client)
         db.session.commit()
