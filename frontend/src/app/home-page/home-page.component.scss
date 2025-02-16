@@ -14,16 +14,149 @@
   animation: fadeIn 1s ease-in-out; // apply fade-in to whole component
 }
 
+.grid-container {
+  display: grid;
+  grid-template-rows: 1fr 1fr; // Two equal rows
+  grid-template-columns: 1fr; // One column
+  gap: 20px;
+  height: 100%;
+}
+
+// Top row sections
+.overview-section,
+.schedule-section {
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+  padding: 20px;
+  // box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+// Make top row split into two columns
+.grid-container {
+  grid-template-areas:
+    "overview schedule"
+    "scans scans";
+  grid-template-columns: 1fr 1fr;
+}
+
+.overview-section {
+  grid-area: overview;
+}
+
+.schedule-section {
+  grid-area: schedule;
+}
+
+.scans-section {
+  grid-area: scans;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+  padding: 20px;
+  height: 405px;
+  // box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.scans-section h1 {
+  margin: 0;
+  margin-left: 10px;
+}
+
+// .client-list {
+//   max-height: 358px; // Adjust this value as needed
+//   margin-top: 5px;
+  
+//   overflow-y: auto;
+//   // Custom scrollbar styling
+//   &::-webkit-scrollbar {
+//     width: 4px;
+//   }
+
+//   &::-webkit-scrollbar-thumb {
+//     background: #898989;
+//     border-radius: 10px;
+    
+//     &:hover {
+//       background: #454545;
+//     }
+//   }
+// }
+.client-list {
+  max-height: 400px;  // Adjust this value as needed
+  overflow: hidden;  // Hide overflow on the container
+  
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+
+  thead {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    
+    th {
+      padding: 12px;
+      text-align: left;
+    }
+  }
+
+  tbody {
+    display: block;
+    overflow-y: auto;
+    height: 32.5vh;  // Should be less than client-list max-height
+    
+    tr {
+      display: table;
+      width: 100%;
+      table-layout: fixed;
+    }
+    
+    td {
+      padding: 12px;
+      text-align: left;
+      font-weight: lighter;
+
+      &:nth-child(7) { // targets the reason column (7th column)
+        > span {
+          display: inline-block;
+          background-color: #b8f29795;
+          padding: 6px 12px;
+          border-radius: 16px;
+          font-size: 0.9em;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          max-width: 75px; // adjust as needed
+        }
+      }
+
+    }
+  }
+
+  thead tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+  }
+}
+
+.section-title {
+  text-align: left;
+  margin-top: -5px;
+  margin-left: 5px;
+  margin-bottom: 0;
+}
+
 table {
   width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
+  // border-collapse: collapse;
 }
 
 th {
   padding: 12px;
   text-align: left;
-  border-bottom: 2px solid #ccc; /* line under the headers */
+  // border-bottom: 2px solid #ccc; /* line under the headers */
   font-weight: bold;
 }
 
@@ -31,4 +164,40 @@ td {
   padding: 12px;
   text-align: left;
   border: none;
+}
+
+.schedule-content {
+  height: 85%;
+  
+  .calendar-container {
+    display: flex;
+    gap: 5px;
+    height: 100%;
+    
+    .schedule-calendar {
+      flex: 0.8;
+      // background: rgba(255, 255, 255, 0.3);
+      border-radius: 8px;
+      padding: 10px;
+      // box-shadow: 0 1px 2px rgba(157, 157, 157, 0.1);
+    }
+    
+    .schedule-details {
+      flex: 1;
+      // background:rgba(255, 255, 255, 0.3);
+      border-radius: 8px;
+      padding: 20px;
+      // box-shadow: 0 1px 2px rgba(157, 157, 157, 0.1);
+      
+      h2 {
+        margin-bottom: 16px;
+        font-size: 1.2em;
+      }
+      
+      .events-list {
+        max-height: calc(100% - 60px);
+        overflow-y: auto;
+      }
+    }
+  }
 }
