@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from models import db, Client
+from flask_migrate import Migrate
+from models import db, Client, Scan
 import subprocess
 
 app = Flask(__name__)
@@ -9,7 +10,10 @@ CORS(app)
 # Database configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///alignai.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Initialize the database
 db.init_app(app)
+migrate = Migrate(app, db)
 
 # Create tables
 with app.app_context():
@@ -20,7 +24,7 @@ Routes for the API, this file can and will be refactored to a more organized str
 """
 
 # CRUD Endpoints
-
+# ---------------- Client Endpoints ----------------
 # Create a new client
 @app.route('/api/clients', methods=['POST'])
 def create_client():
@@ -112,8 +116,50 @@ def delete_client(id):
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 400
+    
+
+# ---------------- Scan Endpoints ----------------
+@app.route('/api/scans', methods=['POST'])
+def create_scan():
+    data = request.json
+    new_scan = Scan(
+        client_id=data['client_id'],
+        scan_reason=data['scan_reason']
+    )
+    db.session.add(new_scan)
+    try:
+        db.session.commit()
+        return jsonify({'message': 'Scan created successfully', 'id': new_scan.id}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 400
+    
+
+@app.route('/api/scans', methods=['GET'])
+def get_scans():
+    scans = Scan.query.all()
+    return jsonify([scan.to_dict() for scan in scans])
 
 
+@app.route('/api/scans/<int:id>', methods=['GET'])
+def get_scan(id):
+    scan = Scan.query.get_or_404(id)
+    return jsonify(scan.to_dict())
+
+
+# delete a scan by its ID
+@app.route('/api/scans/<int:id>', methods=['DELETE'])
+def delete_scan(id):
+    scan = Scan.query.get_or_404(id)
+    try:
+        db.session.delete(scan)
+        db.session.commit()
+        return jsonify({'message': 'Scan deleted successfully'})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 400
+
+# ---------------- AI Model Endpoints ----------------
 # Route to run the model.py script
 @app.route('/run-script', methods=['GET'])
 def run_script():
