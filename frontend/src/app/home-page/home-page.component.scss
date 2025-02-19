@@ -117,7 +117,7 @@
       text-align: left;
       font-weight: lighter;
 
-      &:nth-child(7) { // targets the reason column (7th column)
+      &:nth-child(5) { // targets the reason column (7th column)
         > span {
           display: inline-block;
           background-color: #b8f29795;

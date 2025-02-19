@@ -18,12 +18,12 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 export class HomePageComponent implements OnInit {
   selectedDate: Date | null = null;
   scheduledEvents: any[] = [];
-  clients: any[] = [];
+  scans: any[] = [];
 
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
-    this.getClients();
+    this.getScans();
   }
 
   onDateSelected(date: Date) {
@@ -32,11 +32,11 @@ export class HomePageComponent implements OnInit {
     // this.getEventsForDate(date);
   }
 
-  getClients() {
-    this.http.get<any[]>('http://127.0.0.1:5000/api/clients')
+  getScans() {
+    this.http.get<any[]>('http://127.0.0.1:5000/api/scans')
       .subscribe({
         next: (data) => {
-          this.clients = data;
+          this.scans = data;
         },
         error: (error) => {
           console.error('There was an error!', error);

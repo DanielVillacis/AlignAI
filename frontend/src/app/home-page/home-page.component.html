@@ -39,36 +39,30 @@
     <!-- Bottom section with recent scans -->
     <div class="scans-section">
       <h1 class="section-title">Recent Scans</h1>
-      <div class="client-list" *ngIf="clients.length; else noClients">
+      <div class="client-list" *ngIf="scans.length; else noScans">
         <table>
           <thead>
             <tr>
-              <th>First Name</th>
-              <th>Last Name</th>
+              <th>Visit No.</th>
+              <th>Patient Name</th>
+              <th>Date</th>
               <th>Age</th>
-              <th>Gender</th>
-              <th>Email</th>
-              <th>Telephone</th>
               <th>Reason</th>
-              <th>Conditions</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let client of clients">
-              <td>{{ client.first_name }}</td>
-              <td>{{ client.last_name }}</td>
-              <td>{{ client.age }}</td>
-              <td>{{ client.gender }}</td>
-              <td>{{ client.email }}</td>
-              <td>{{ client.telephone }}</td>
-              <td><span>{{ client.reason }}</span></td>
-              <td>{{ client.previous_conditions }}</td>
+            <tr *ngFor="let scan of scans">
+              <td>{{ scan.id }}</td>
+              <td>{{ scan.client_full_name }}</td>
+              <td>{{ scan.scan_date }}</td>
+              <td>{{ scan.client_age }}</td>
+              <td><span>{{ scan.scan_reason }}</span></td>
             </tr>
           </tbody>
         </table>
       </div>
-      <ng-template #noClients>
-        <p>No clients found. Please add a client.</p>
+      <ng-template #noScans>
+        <p>No Scans found.</p>
       </ng-template>
     </div>
   </div>
