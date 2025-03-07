@@ -10,41 +10,11 @@
   overflow: hidden;
 }
 
-.client-form {
-  width: 100%;
-  max-width: 1500px;
-  min-height: 900px;
-  // margin: 20px auto;
-  padding: 60px;
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 17px;
-  backdrop-filter: blur(10px);
-  box-sizing: border-box;
-  flex-direction: column;
-  gap: 20px;
-
-  h1 {
-    margin-bottom: 30px;
-    font-size: 2em;
-  }
-
-  .buttons-container {
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-    margin-top: 20px;
-  }
-}
-
-.form-row {
+.buttons-container {
   display: flex;
-  gap: 50px;
-  margin-bottom: 24px;
-  
-  .form-group {
-    flex: 1;
-    margin-bottom: 0;
-  }
+  gap: 20px;
+  justify-content: center;
+  margin-top: 20px;
 }
 
 .fade-in {
@@ -57,34 +27,6 @@
 }
 
 // -------- BUTTONS --------
-
-.button-74 {
-  background-color: #fbeee0;
-  border: 2px solid #422800;
-  border-radius: 30px;
-  box-shadow: #422800 4px 4px 0 0;
-  color: #422800;
-  cursor: pointer;
-  display: inline-block;
-  font-weight: 600;
-  font-size: 18px;
-  padding: 0 18px;
-  line-height: 50px;
-  text-align: center;
-  text-decoration: none;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-}
-
-.button-74:hover {
-  background-color: #fff;
-}
-
-.button-74:active {
-  box-shadow: #422800 2px 2px 0 0;
-  transform: translate(2px, 2px);
-}
 
 /* CSS */
 .button-28 {
@@ -104,14 +46,13 @@
   min-height: 60px;
   min-width: 0;
   outline: none;
-  padding: 16px 24px;
+  padding: 16px 64px;
   text-align: center;
   text-decoration: none;
   transition: all 300ms cubic-bezier(.23, 1, 0.32, 1);
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
-  width: 20%;
   will-change: transform;
 }
 
@@ -129,50 +70,3 @@
   transform: translateY(0);
 }
 // ----------------- END BUTTONS -----------------
-
-@media (min-width: 768px) {
-  .button-74 {
-    min-width: 120px;
-    padding: 0 25px;
-  }
-}
-
-.form-group {
-  margin-bottom: 24px;
-  text-align: left;
-
-  label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 500;
-  }
-  
-  input, select, textarea {
-    width: 100%;
-    padding: 12px;
-    border: none;
-    border-radius: 7px;
-    background: rgb(194, 194, 194, 0.2);
-    color: rgba(0, 0, 0, 0.7);
-    font-size: 16px;
-    box-sizing: border-box;
-    
-    &::placeholder {
-      color: rgba(86, 86, 86, 0.7);
-    }
-    
-    &:focus {
-      outline: none;
-      box-shadow: 0 0 0 2px rgba(97, 97, 97, 0.6);
-    }
-  }
-  
-  textarea {
-    min-height: 100px;
-    resize: vertical;
-  }
-}
-
-.button-74 {
-  margin-top: 20px;
-}
