@@ -1,0 +1,56 @@
+<div class="content">
+    <div class="clients-section">
+        <h1 class="section-title">Patients</h1>
+
+        <!-- Search bar -->
+        <div class="search-container">
+            <input 
+                type="text" 
+                [(ngModel)]="searchTerm" 
+                (ngModelChange)="searchClients()"
+                placeholder="Search for a patient"
+                class="search-input"
+            >
+        </div>
+
+
+        <div class="client-list" *ngIf="clients.length; else noClients">
+          <table>
+            <thead>
+              <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>Email</th>
+                <th>Telephone</th>
+                <th>Conditions</th>
+              </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let client of clients"
+                    (click)="navigateToClient(client.id)"
+                    class="client-row">
+                    <td>{{ client.first_name }}</td>
+                    <td>{{ client.last_name }}</td>
+                    <td>{{ client.age }}</td>
+                    <td>{{ client.gender }}</td>
+                    <td>{{ client.email }}</td>
+                    <td>{{ client.telephone }}</td>
+                    <td><span>{{ client.reason }}</span></td>
+                </tr>
+            </tbody>
+          </table>
+        </div>
+        <ng-template #noClients>
+            <p>No clients found. Please add a client.</p>
+        </ng-template>
+        <!-- Add client button -->
+        <div class="buttons-container">
+          <button class="button-28" (click)="navigateToCreateNewClient()">
+            New Patient
+          </button>
+        </div>
+        
+      </div>
+</div>
