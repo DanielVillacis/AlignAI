@@ -14,7 +14,7 @@
         </div>
 
 
-        <div class="client-list" *ngIf="clients.length; else noClients">
+        <div class="client-list" *ngIf="filteredClients.length; else noClients">
           <table>
             <thead>
               <tr>
@@ -28,7 +28,7 @@
               </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let client of clients"
+                <tr *ngFor="let client of filteredClients"
                     (click)="navigateToClient(client.id)"
                     class="client-row">
                     <td>{{ client.first_name }}</td>

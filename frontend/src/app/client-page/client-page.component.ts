@@ -14,11 +14,14 @@ import { Router } from '@angular/router';
 export class ClientPageComponent {
   searchTerm: string = '';
   clients: any[] = [];
+  filteredClients: any[] = [];
 
   constructor(
     private http: HttpClient,
     private router: Router
-  ) {}
+  ) {
+
+  }
 
   ngOnInit(): void {
     this.getClients();
@@ -29,6 +32,7 @@ export class ClientPageComponent {
     .subscribe({
       next: (data) => {
         this.clients = data;
+        this.filteredClients = data;
       },
       error: (error) => {
         console.error('There was an error!', error);
@@ -36,7 +40,18 @@ export class ClientPageComponent {
   }
 
   searchClients() {
-    // search client logic
+    if (!this.searchTerm) {
+      this.filteredClients = this.clients;
+      return;
+    }
+
+    const searchTermLower = this.searchTerm.toLowerCase();
+    this.filteredClients = this.clients.filter(client => 
+      client.first_name.toLowerCase().includes(searchTermLower) ||
+      client.last_name.toLowerCase().includes(searchTermLower) ||
+      client.email.toLowerCase().includes(searchTermLower) ||
+      client.telephone.toLowerCase().includes(searchTermLower)
+    );
   }
 
   navigateToClient(clientId: number) {
