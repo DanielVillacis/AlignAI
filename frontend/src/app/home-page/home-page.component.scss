@@ -80,6 +80,7 @@
 //     }
 //   }
 // }
+
 .client-list {
   max-height: 400px;  // Adjust this value as needed
   overflow: hidden;  // Hide overflow on the container
@@ -201,3 +202,50 @@ td {
     }
   }
 }
+
+.overview-content {
+  // display: flex;
+  // flex-direction: column;
+  // height: 100%;
+  
+  .chart-container {
+    margin-top: 32px;
+    // flex: 1;
+
+    // padding: 10px;
+    // background: white;
+    // border-radius: 8px;
+    // box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  // .stats-container {
+  //   display: flex;
+  //   // gap: 10px;
+  //   // margin-top: 10px;
+    
+  //   .stat-card {
+  //     flex: 1;
+  //     display: flex;
+  //     flex-direction: column;
+  //     align-items: center;
+  //     justify-content: center;
+  //     // padding: 10px;
+  //     // background: white;
+  //     border-radius: 8px;
+  //     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      
+  //     .stat-title {
+  //       font-size: 14px;
+  //       color: #666;
+  //       margin-bottom: 8px;
+  //     }
+      
+  //     .stat-value {
+  //       font-size: 24px;
+  //       font-weight: bold;
+  //       color: #333;
+  //     }
+  //   }
+  // }
+}
+

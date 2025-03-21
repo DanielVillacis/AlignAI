@@ -5,6 +5,48 @@
       <h1 class="section-title">Overview</h1>
       <div class="overview-content">
         <!-- Add overview content here -->
+        <div class="chart-container">
+          <!-- <ngx-charts-area-chart
+            [view]="view"
+            [scheme]="colorScheme"
+            [legend]="legend"
+            [legendPosition]="legendPosition"
+            [legendTitle]="legendTitle"
+            [showXAxisLabel]="showXAxisLabel"
+            [showYAxisLabel]="showYAxisLabel"
+            [xAxis]="xAxis"
+            [yAxis]="yAxis"
+            [xAxisLabel]="xAxisLabel"
+            [yAxisLabel]="yAxisLabel"
+            [timeline]="timeline"
+            [results]="areaChartData"
+            [curve]="curve"
+            [gradient]="gradient">
+          </ngx-charts-area-chart> -->
+          <apx-chart
+            [series]="series"
+            [chart]="chart"
+            [xaxis]="xaxis"
+            [stroke]="stroke"
+            [dataLabels]="dataLabels"
+            [yaxis]="yaxis"
+            [labels]="labels"
+            [legend]="legend"
+            [colors]="colors"
+            [fill]="fill"
+            [grid]="grid">
+          </apx-chart>
+        </div>
+        <!-- <div class="stats-container">
+          <div class="stat-card">
+            <span class="stat-title">Total Patients</span>
+            <span class="stat-value">{{ scans.length }}</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-title">This Week</span>
+            <span class="stat-value">12</span>
+          </div>
+        </div> -->
       </div>
     </div>
     
