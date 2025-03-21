@@ -1,7 +1,8 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_migrate import Migrate
-from models import db, Client, Scan
+from models import db, Client, Scan, Event
+from datetime import datetime, timedelta
 import subprocess
 
 app = Flask(__name__)
@@ -155,6 +156,93 @@ def delete_scan(id):
         db.session.delete(scan)
         db.session.commit()
         return jsonify({'message': 'Scan deleted successfully'})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 400
+
+# ---------------- Event Endpoints ----------------
+@app.route('/api/events', methods=['POST'])
+def create_event():
+    data = request.json
+    new_event = Event(
+        title=data['title'],
+        description=data.get('description', ''),
+        event_date=datetime.fromisoformat(data['event_date']),
+        client_id=data.get('client_id'),  # Optional
+        is_scan=data.get('is_scan', False)
+    )
+    db.session.add(new_event)
+    try:
+        db.session.commit()
+        return jsonify({'message': 'Event created successfully', 'id': new_event.id}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 400
+
+
+@app.route('/api/events', methods=['GET'])
+def get_events():
+    # Get events for a specific date if provided
+    date_str = request.args.get('date')
+    if date_str:
+        try:
+            # Parse the date string
+            target_date = datetime.fromisoformat(date_str.replace('Z', '+00:00'))
+            # Get all events for that day
+            start_of_day = datetime(target_date.year, target_date.month, target_date.day, 0, 0, 0)
+            end_of_day = start_of_day + timedelta(days=1)
+            
+            events = Event.query.filter(
+                Event.event_date >= start_of_day,
+                Event.event_date < end_of_day
+            ).all()
+            
+            return jsonify([event.to_dict() for event in events])
+        except ValueError:
+            return jsonify({'error': 'Invalid date format'}), 400
+    else:
+        # Return all events
+        events = Event.query.all()
+        return jsonify([event.to_dict() for event in events])
+
+
+@app.route('/api/events/<int:id>', methods=['GET'])
+def get_event(id):
+    event = Event.query.get_or_404(id)
+    return jsonify(event.to_dict())
+
+
+@app.route('/api/events/<int:id>', methods=['PUT'])
+def update_event(id):
+    event = Event.query.get_or_404(id)
+    data = request.json
+    
+    if 'title' in data:
+        event.title = data['title']
+    if 'description' in data:
+        event.description = data['description']
+    if 'event_date' in data:
+        event.event_date = datetime.fromisoformat(data['event_date'])
+    if 'client_id' in data:
+        event.client_id = data['client_id']
+    if 'is_scan' in data:
+        event.is_scan = data['is_scan']
+    
+    try:
+        db.session.commit()
+        return jsonify({'message': 'Event updated successfully'})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 400
+
+
+@app.route('/api/events/<int:id>', methods=['DELETE'])
+def delete_event(id):
+    event = Event.query.get_or_404(id)
+    try:
+        db.session.delete(event)
+        db.session.commit()
+        return jsonify({'message': 'Event deleted successfully'})
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 400

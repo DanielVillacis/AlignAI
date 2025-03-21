@@ -8,6 +8,10 @@ import { NgxChartsModule, LegendPosition } from '@swimlane/ngx-charts';
 import * as shape from 'd3-shape';
 import { group } from '@angular/animations';
 import { NgApexchartsModule } from 'ng-apexcharts';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { CreateEventFormComponent } from '../create-event-form/create-event-form.component';
+
 
 import {
   ApexChart,
@@ -46,7 +50,9 @@ export type ChartOptions = {
     CommonModule, 
     MatDatepickerModule, 
     MatNativeDateModule,
-    NgApexchartsModule
+    NgApexchartsModule,
+    ReactiveFormsModule,
+    MatDialogModule
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './home-page.component.html',
@@ -57,6 +63,10 @@ export class HomePageComponent implements OnInit {
   selectedDate: Date | null = null;
   scheduledEvents: any[] = [];
   scans: any[] = [];
+  isLoading: boolean = false;
+  eventForm: FormGroup;
+  showEventForm: boolean = false;
+  clients: any[] = [];
 
   // ------------- Apex Chart -------------
   // ApexCharts configuration
@@ -135,17 +145,147 @@ export class HomePageComponent implements OnInit {
 
 
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient, 
+    private fb: FormBuilder,
+    private dialog: MatDialog) {
+    // Initialize form
+    this.eventForm = this.fb.group({
+      title: ['', Validators.required],
+      description: [''],
+      event_date: ['09:00', Validators.required],
+      client_id: [null],
+      is_scan: [false]
+    });
+  }
 
   ngOnInit(): void {
     this.getScans();
     this.generateChartData();
+    this.getClients(); // Fetch clients for dropdown
   }
 
   onDateSelected(date: Date) {
     this.selectedDate = date;
-    // Here you would fetch events for the selected date
-    // this.getEventsForDate(date);
+    this.getEventsForDate(date);
+  
+    // Update form with selected date
+    if (this.eventForm) {
+      this.eventForm.patchValue({
+        event_date: this.formatDateForApi(date)
+      });
+    }
+  }
+
+  getEventsForDate(date: Date) {
+    this.isLoading = true;
+    const formattedDate = this.formatDateForApi(date);
+    
+    this.http.get<any[]>(`http://127.0.0.1:5000/api/events?date=${formattedDate}`)
+      .subscribe({
+        next: (data) => {
+          this.scheduledEvents = data;
+          this.isLoading = false;
+        },
+        error: (error) => {
+          console.error('Error fetching events:', error);
+          this.isLoading = false;
+        }
+      });
+  }
+
+  getClients() {
+    this.http.get<any[]>('http://127.0.0.1:5000/api/clients')
+      .subscribe({
+        next: (data) => {
+          this.clients = data;
+        },
+        error: (error) => {
+          console.error('Error fetching clients:', error);
+        }
+      });
+  }
+
+  // Helper to format date for API
+  formatDateForApi(date: Date): string {
+    return date.toISOString().split('T')[0];
+  }
+
+  // Replace toggleEventForm with this method
+  openEventDialog(): void {
+    const dialogRef = this.dialog.open(CreateEventFormComponent, {
+      width: '500px',
+      data: { 
+        title: 'Add Event',
+        clients: this.clients,
+        selectedDate: this.selectedDate
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // Create event with the form data
+        const eventData = { ...result };
+        
+        // Ensure date is in correct format
+        if (this.selectedDate) {
+          eventData.event_date = this.formatDateForApi(this.selectedDate) + 'T' + 
+                                (eventData.event_time || '09:00:00');
+        }
+        
+        this.http.post('http://127.0.0.1:5000/api/events', eventData)
+          .subscribe({
+            next: (response) => {
+              console.log('Event created successfully', response);
+              this.getEventsForDate(this.selectedDate!);
+            },
+            error: (error) => {
+              console.error('Error creating event:', error);
+            }
+          });
+      }
+    });
+  }
+
+  // Create new event
+  createEvent() {
+    if (this.eventForm.valid) {
+      const eventData = this.eventForm.value;
+      
+      // Ensure date is in correct format
+      if (this.selectedDate) {
+        eventData.event_date = this.formatDateForApi(this.selectedDate) + 'T' + 
+                              (eventData.event_time || '09:00:00');
+      }
+      
+      this.http.post('http://127.0.0.1:5000/api/events', eventData)
+        .subscribe({
+          next: (response) => {
+            console.log('Event created successfully', response);
+            this.getEventsForDate(this.selectedDate!);
+            this.eventForm.reset();
+            this.showEventForm = false;
+          },
+          error: (error) => {
+            console.error('Error creating event:', error);
+          }
+        });
+    }
+  }
+
+  // Delete event
+  deleteEvent(eventId: number) {
+    if (confirm('Are you sure you want to delete this event?')) {
+      this.http.delete(`http://127.0.0.1:5000/api/events/${eventId}`)
+        .subscribe({
+          next: () => {
+            this.getEventsForDate(this.selectedDate!);
+          },
+          error: (error) => {
+            console.error('Error deleting event:', error);
+          }
+        });
+    }
   }
 
   getScans() {
