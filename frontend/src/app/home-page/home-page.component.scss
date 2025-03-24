@@ -304,57 +304,104 @@ td {
   }
 }
 
-.event-card {
-  background-color: white;
-  padding: 12px;
-  border-radius: 8px;
-  margin-bottom: 10px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+// Events list container
+.events-list {
+  max-height: calc(100% - 60px);
+  overflow-y: auto;
   
-  .event-header {
-    margin-bottom: 5px;
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 10px;
     
+    &:hover {
+      background: #999;
+    }
+  }
+}
+
+
+.event-card {
+  position: relative;
+  padding: 10px 30px 10px 12px; // Add right padding to make room for delete button
+  // Other properties remain the same
+  
+  .event-main {
+    text-align: left;
     h3 {
-      margin: 0;
-      font-size: 1rem;
+      margin: 0 0 4px 0;
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+    
+    .event-desc {
+      margin: 0 0 6px 0;
+      font-size: 0.85rem;
+      color: #666;
     }
   }
   
-  .event-time {
+  .event-details {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 4px;
+    
+    .event-client {
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-right: 8px;
+    }
+    
+    .event-tag {
+      display: inline-block;
+      background-color: #3EC9B9;
+      color: white;
+      padding: 1px 6px;
+      border-radius: 10px;
+      font-size: 0.75rem;
+      margin-right: 8px;
+    }
+    
+    .event-time {
+      color: #666;
+      font-size: 0.85rem;
+      margin-left: auto; // Push to the right
+    }
+  }
+  
+  .delete-btn {
+    position: absolute; // Position it absolutely within the card
+    top: 8px;
+    right: 8px;
+    background-color: #f0f0f0;
+    border: none;
     color: #666;
-    font-size: 0.9rem;
-    margin: 5px 0;
-  }
-  
-  .event-desc {
-    margin: 8px 0;
-  }
-  
-  .event-client {
+    font-size: 1.2rem;
     font-weight: bold;
-    margin: 5px 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    cursor: pointer;
+    opacity: 0; // Start hidden
+    transition: all 0.2s ease;
+    z-index: 10; // Ensure it's above everything else
+    
+    &:hover {
+      color: white;
+      background-color: #ff3b30;
+    }
   }
   
-  .event-tag {
-    display: inline-block;
-    background-color: #3EC9B9;
-    color: white;
-    padding: 2px 8px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-  }
-  
-  .event-actions {
+  &:hover {
     .delete-btn {
-      background: none;
-      border: none;
-      color: #ff3b30;
-      cursor: pointer;
-      font-size: 0.8rem;
-      
-      &:hover {
-        text-decoration: underline;
-      }
+      opacity: 1 !important; // Force visibility on hover with !important
     }
   }
 }

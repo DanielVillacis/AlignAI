@@ -45,27 +45,27 @@
             </div>
             
             <!-- Events list -->
-            <div class="events-list" *ngIf="selectedDate">
-              <p *ngIf="isLoading">Loading events...</p>
-              <p *ngIf="!isLoading && scheduledEvents.length === 0">No events scheduled for this date.</p>
-              
+            <div class="events-list">
               <div *ngFor="let event of scheduledEvents" class="event-card">
-                <div class="event-header">
-                  <h3>{{ event.title }}</h3>
-                  <div class="event-actions">
-                    <button class="delete-btn" (click)="deleteEvent(event.id)">Delete</button>
+                <button class="delete-btn" (click)="deleteEvent(event.id)" title="Delete event">×</button>
+                
+                <div class="event-content">
+                  <div class="event-main">
+                    <h3>{{ event.title }}</h3>
+                    <p *ngIf="event.description" class="event-desc">{{ event.description }}</p>
+                  </div>
+                  
+                  <div class="event-details">
+                    <span *ngIf="event.client_name" class="event-client">{{ event.client_name }}</span>
+                    <span *ngIf="event.is_scan" class="event-tag">Scan</span>
+                    <span class="event-time">{{ event.event_date | date:'shortTime' }}</span>
                   </div>
                 </div>
-                <p class="event-time">{{ event.event_date | date:'shortTime' }}</p>
-                <p *ngIf="event.description" class="event-desc">{{ event.description }}</p>
-                <p *ngIf="event.client_name" class="event-client">
-                  Patient: {{ event.client_name }}
-                </p>
-                <span *ngIf="event.is_scan" class="event-tag">Scan</span>
               </div>
+              
+              <p *ngIf="selectedDate && scheduledEvents.length === 0">No events scheduled for this date.</p>
+              <p *ngIf="!selectedDate">Select a date to view scheduled events</p>
             </div>
-            
-            <p *ngIf="!selectedDate">Select a date to view scheduled events</p>
           </div>
         </div>
       </div>
