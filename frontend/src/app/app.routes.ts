@@ -1,8 +1,8 @@
 import { Routes } from '@angular/router';
-import { HomePageComponent } from './home-page/home-page.component';
-import { ScanPageComponent } from './scan-page/scan-page.component';
-import { ClientPageComponent } from './client-page/client-page.component';
-import { CreateClientPageComponent } from './create-client-page/create-client-page.component';
+import { HomePageComponent } from './components/home-page/home-page.component';
+import { ScanPageComponent } from './components/scan-page/scan-page.component';
+import { ClientPageComponent } from './components/client-page/client-page.component';
+import { CreateClientPageComponent } from './components/create-client-page/create-client-page.component';
 
 export const routes: Routes = [
     { path: '', component: HomePageComponent },
