@@ -1,0 +1,80 @@
+<div class="content" *ngIf="client">
+    <div class="profile-section">
+      <div class="header">
+        <button class="back-button" (click)="goBack()">← Back</button>
+        <h1 class="section-title">Patient Profile</h1>
+      </div>
+  
+      <div class="profile-content">
+        <div class="profile-actions">
+          <button class="button-28" (click)="toggleEdit()">
+            {{ isEditing ? 'Cancel' : 'Edit' }}
+          </button>
+          <button class="button-28 delete" (click)="deleteClient()">Delete</button>
+        </div>
+  
+        <div class="profile-info" *ngIf="!isEditing">
+          <div class="info-group">
+            <h3>Personal Information</h3>
+            <p><strong>Name:</strong> {{client.first_name}} {{client.last_name}}</p>
+            <p><strong>Age:</strong> {{client.age}}</p>
+            <p><strong>Gender:</strong> {{client.gender}}</p>
+            <p><strong>Email:</strong> {{client.email}}</p>
+            <p><strong>Telephone:</strong> {{client.telephone}}</p>
+          </div>
+          
+          <div class="info-group">
+            <h3>Medical Information</h3>
+            <p><strong>Reason:</strong> {{client.reason}}</p>
+            <p><strong>Previous Conditions:</strong> {{client.previous_conditions || 'None'}}</p>
+          </div>
+        </div>
+  
+        <div class="profile-edit" *ngIf="isEditing">
+          <form (ngSubmit)="saveChanges()">
+            <div class="form-group">
+              <label>First Name:</label>
+              <input type="text" [(ngModel)]="editedClient.first_name" name="firstName">
+            </div>
+  
+            <div class="form-group">
+              <label>Last Name:</label>
+              <input type="text" [(ngModel)]="editedClient.last_name" name="lastName">
+            </div>
+  
+            <div class="form-group">
+              <label>Age:</label>
+              <input type="number" [(ngModel)]="editedClient.age" name="age">
+            </div>
+  
+            <div class="form-group">
+              <label>Gender:</label>
+              <input type="text" [(ngModel)]="editedClient.gender" name="gender">
+            </div>
+  
+            <div class="form-group">
+              <label>Email:</label>
+              <input type="email" [(ngModel)]="editedClient.email" name="email">
+            </div>
+  
+            <div class="form-group">
+              <label>Telephone:</label>
+              <input type="tel" [(ngModel)]="editedClient.telephone" name="telephone">
+            </div>
+  
+            <div class="form-group">
+              <label>Reason:</label>
+              <textarea [(ngModel)]="editedClient.reason" name="reason"></textarea>
+            </div>
+  
+            <div class="form-group">
+              <label>Previous Conditions:</label>
+              <textarea [(ngModel)]="editedClient.previous_conditions" name="previousConditions"></textarea>
+            </div>
+  
+            <button type="submit" class="button-28">Save Changes</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>

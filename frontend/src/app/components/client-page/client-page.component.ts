@@ -54,7 +54,7 @@ export class ClientPageComponent implements OnInit {
   }
 
   navigateToClient(clientId: number) {
-    this.router.navigate(['/client', clientId]);
+    this.router.navigate(['/clients', clientId]);
   }
 
   navigateToCreateNewClient() {
