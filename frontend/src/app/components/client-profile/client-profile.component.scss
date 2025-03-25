@@ -1,22 +1,37 @@
+.fade-in {
+    animation: fadeIn 0.7s ease-in-out;
+}
+  
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
 .content {
     padding: 2rem;
-  }
+    margin-left: 220px;
+    padding: 20px;
+    text-align: center;
+    animation: fadeIn 1s ease-in-out; // apply fade-in to whole component
+    height: 100%;
+}
+
   
-  .profile-section {
+.profile-section {
     background: white;
-    border-radius: 8px;
+    border-radius: 17px;
     padding: 2rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  }
+    height: 90dvh;
+}
   
-  .header {
+.header {
     display: flex;
     align-items: center;
     gap: 1rem;
     margin-bottom: 2rem;
-  }
+}
   
-  .back-button {
+.back-button {
     padding: 0.5rem 1rem;
     border: none;
     background: none;
@@ -27,9 +42,9 @@
     &:hover {
       color: #333;
     }
-  }
+}
   
-  .profile-actions {
+.profile-actions {
     display: flex;
     gap: 1rem;
     margin-bottom: 2rem;
@@ -37,9 +52,9 @@
     .button-28.delete {
       background-color: #ff4444;
     }
-  }
+}
   
-  .profile-info {
+.profile-info {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 2rem;
@@ -59,9 +74,9 @@
         }
       }
     }
-  }
+}
   
-  .profile-edit {
+.profile-edit {
     form {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -100,4 +115,4 @@
         margin-top: 1rem;
       }
     }
-  }
+}
