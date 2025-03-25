@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ClientService } from '../../services/client.service';
 
 @Component({
   selector: 'app-client-page',
@@ -11,32 +11,31 @@ import { Router } from '@angular/router';
   templateUrl: './client-page.component.html',
   styleUrl: './client-page.component.scss'
 })
-export class ClientPageComponent {
+export class ClientPageComponent implements OnInit {
   searchTerm: string = '';
   clients: any[] = [];
   filteredClients: any[] = [];
 
   constructor(
-    private http: HttpClient,
+    private clientService: ClientService,
     private router: Router
-  ) {
-
-  }
+  ) {}
 
   ngOnInit(): void {
     this.getClients();
   }
 
   getClients() {
-    this.http.get<any[]>('http://127.0.0.1:5000/api/clients')
-    .subscribe({
-      next: (data) => {
-        this.clients = data;
-        this.filteredClients = data;
-      },
-      error: (error) => {
-        console.error('There was an error!', error);
-      }});
+    this.clientService.getClients()
+      .subscribe({
+        next: (data) => {
+          this.clients = data;
+          this.filteredClients = data;
+        },
+        error: (error) => {
+          console.error('There was an error!', error);
+        }
+      });
   }
 
   searchClients() {
@@ -61,5 +60,4 @@ export class ClientPageComponent {
   navigateToCreateNewClient() {
     this.router.navigate(['clients/new']);
   }
-
 }

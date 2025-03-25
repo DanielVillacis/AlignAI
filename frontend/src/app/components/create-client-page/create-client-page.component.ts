@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
+import { ClientService } from '../../services/client.service';
 
 @Component({
   selector: 'app-create-client-page',
@@ -17,9 +17,10 @@ export class CreateClientPageComponent {
 
   constructor(
     private fb: FormBuilder, 
-    private http: HttpClient,
+    private clientService: ClientService,
     private snackBar: MatSnackBar,
-    private router: Router) {
+    private router: Router
+  ) {
     this.clientForm = this.fb.group({
       first_name: ['', Validators.required],
       last_name: ['', Validators.required],
@@ -34,27 +35,28 @@ export class CreateClientPageComponent {
 
   addPatient() {
     if (this.clientForm.valid) {
-      this.http.post('http://127.0.0.1:5000/api/clients', this.clientForm.value)
-      .subscribe({
-        next: (data) => {
-          this.snackBar.open('Patient added successfully', 'Close', {
-            duration: 5000,
-            horizontalPosition: 'right',
-            verticalPosition: 'bottom',
-            panelClass: ['success-snackbar']
-          });
-          this.router.navigate(['/clients']);
-          console.log('Patient added successfully', data);
-        },
-        error: (error) => {
-          this.snackBar.open('Error adding patient', 'Close', {
-            duration: 5000,
-            horizontalPosition: 'right',
-            verticalPosition: 'bottom',
-            panelClass: ['error-snackbar']
-          });
-          console.error('Error adding patient', error);
-        }});
+      this.clientService.createClient(this.clientForm.value)
+        .subscribe({
+          next: (data) => {
+            this.snackBar.open('Patient added successfully', 'Close', {
+              duration: 5000,
+              horizontalPosition: 'right',
+              verticalPosition: 'bottom',
+              panelClass: ['success-snackbar']
+            });
+            this.router.navigate(['/clients']);
+            console.log('Patient added successfully', data);
+          },
+          error: (error) => {
+            this.snackBar.open('Error adding patient', 'Close', {
+              duration: 5000,
+              horizontalPosition: 'right',
+              verticalPosition: 'bottom',
+              panelClass: ['error-snackbar']
+            });
+            console.error('Error adding patient', error);
+          }
+        });
     }
   }
 }

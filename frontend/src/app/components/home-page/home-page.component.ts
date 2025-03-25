@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { MatDatepickerModule} from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -8,6 +7,9 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { CreateEventFormComponent } from '../create-event-form/create-event-form.component';
 import { OverviewChartComponent } from '../overview-chart/overview-chart.component';
+import { ClientService } from '../../services/client.service';
+import { EventService } from '../../services/event.service';
+import { ScanService } from '../../services/scan.service';
 
 @Component({
   selector: 'app-home',
@@ -24,7 +26,6 @@ import { OverviewChartComponent } from '../overview-chart/overview-chart.compone
   templateUrl: './home-page.component.html',
   styleUrls: ['./home-page.component.scss'],
 })
-
 export class HomePageComponent implements OnInit {
   selectedDate: Date | null = null;
   scheduledEvents: any[] = [];
@@ -34,12 +35,13 @@ export class HomePageComponent implements OnInit {
   showEventForm: boolean = false;
   clients: any[] = [];
 
-
-
   constructor(
-    private http: HttpClient, 
     private fb: FormBuilder,
-    private dialog: MatDialog) {
+    private dialog: MatDialog,
+    private clientService: ClientService,
+    private eventService: EventService,
+    private scanService: ScanService
+  ) {
     // Initialize form
     this.eventForm = this.fb.group({
       title: ['', Validators.required],
@@ -52,7 +54,7 @@ export class HomePageComponent implements OnInit {
 
   ngOnInit(): void {
     this.getScans();
-    this.getClients(); // Fetch clients for dropdown
+    this.getClients();
   }
 
   onDateSelected(date: Date) {
@@ -71,7 +73,7 @@ export class HomePageComponent implements OnInit {
     this.isLoading = true;
     const formattedDate = this.formatDateForApi(date);
     
-    this.http.get<any[]>(`http://127.0.0.1:5000/api/events?date=${formattedDate}`)
+    this.eventService.getEventsForDate(formattedDate)
       .subscribe({
         next: (data) => {
           this.scheduledEvents = data;
@@ -85,7 +87,7 @@ export class HomePageComponent implements OnInit {
   }
 
   getClients() {
-    this.http.get<any[]>('http://127.0.0.1:5000/api/clients')
+    this.clientService.getClients()
       .subscribe({
         next: (data) => {
           this.clients = data;
@@ -104,7 +106,6 @@ export class HomePageComponent implements OnInit {
     return `${year}-${month}-${day}`;
   }
 
-  // Replace toggleEventForm with this method
   openEventDialog(): void {
     const dialogRef = this.dialog.open(CreateEventFormComponent, {
       width: '500px',
@@ -128,7 +129,7 @@ export class HomePageComponent implements OnInit {
                               (eventData.event_time || '09:00:00') + 'Z';
         }
         
-        this.http.post('http://127.0.0.1:5000/api/events', eventData)
+        this.eventService.createEvent(eventData)
           .subscribe({
             next: (response) => {
               console.log('Event created successfully', response);
@@ -142,7 +143,6 @@ export class HomePageComponent implements OnInit {
     });
   }
 
-  // Create new event
   createEvent() {
     if (this.eventForm.valid) {
       const eventData = this.eventForm.value;
@@ -153,7 +153,7 @@ export class HomePageComponent implements OnInit {
                               (eventData.event_time || '09:00:00');
       }
       
-      this.http.post('http://127.0.0.1:5000/api/events', eventData)
+      this.eventService.createEvent(eventData)
         .subscribe({
           next: (response) => {
             console.log('Event created successfully', response);
@@ -168,10 +168,9 @@ export class HomePageComponent implements OnInit {
     }
   }
 
-  // Delete event
   deleteEvent(eventId: number) {
     if (confirm('Are you sure you want to delete this event?')) {
-      this.http.delete(`http://127.0.0.1:5000/api/events/${eventId}`)
+      this.eventService.deleteEvent(eventId)
         .subscribe({
           next: () => {
             this.getEventsForDate(this.selectedDate!);
@@ -184,7 +183,7 @@ export class HomePageComponent implements OnInit {
   }
 
   getScans() {
-    this.http.get<any[]>('http://127.0.0.1:5000/api/scans')
+    this.scanService.getScans()
       .subscribe({
         next: (data) => {
           this.scans = data;
@@ -192,8 +191,6 @@ export class HomePageComponent implements OnInit {
         error: (error) => {
           console.error('There was an error!', error);
         }
-      }
-      );
+      });
   }
-
 }
