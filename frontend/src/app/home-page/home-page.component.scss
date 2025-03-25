@@ -63,26 +63,6 @@
   margin-left: 10px;
 }
 
-// .client-list {
-//   max-height: 358px; // Adjust this value as needed
-//   margin-top: 5px;
-  
-//   overflow-y: auto;
-//   // Custom scrollbar styling
-//   &::-webkit-scrollbar {
-//     width: 4px;
-//   }
-
-//   &::-webkit-scrollbar-thumb {
-//     background: #898989;
-//     border-radius: 10px;
-    
-//     &:hover {
-//       background: #454545;
-//     }
-//   }
-// }
-
 .client-list {
   max-height: 400px;  // Adjust this value as needed
   overflow: hidden;  // Hide overflow on the container
