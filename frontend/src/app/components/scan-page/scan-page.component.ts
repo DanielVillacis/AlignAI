@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ScanService } from '../../services/scan.service';
 
 @Component({
   selector: 'scan-page',
@@ -14,7 +14,10 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 export class ScanPageComponent {
   clientForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private http: HttpClient) {
+  constructor(
+    private fb: FormBuilder, 
+    private scanService: ScanService
+  ) {
     this.clientForm = this.fb.group({
       first_name: ['', Validators.required],
       last_name: ['', Validators.required],
@@ -28,13 +31,12 @@ export class ScanPageComponent {
   }
 
   launchScan() {
-    this.http.get('http://127.0.0.1:5000/run-script').subscribe(
-      {
-        next: (data) => {
-          console.log('Scan launched successfully', data);
-        },
-        error: (error) => {
-          console.error('Error launching scan', error);
+    this.scanService.launchScan().subscribe({
+      next: (data) => {
+        console.log('Scan launched successfully', data);
+      },
+      error: (error) => {
+        console.error('Error launching scan', error);
       }
     });
   }
