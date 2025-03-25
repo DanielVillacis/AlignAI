@@ -208,7 +208,10 @@ export class HomePageComponent implements OnInit {
 
   // Helper to format date for API
   formatDateForApi(date: Date): string {
-    return date.toISOString().split('T')[0];
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 
   // Replace toggleEventForm with this method
@@ -229,8 +232,10 @@ export class HomePageComponent implements OnInit {
         
         // Ensure date is in correct format
         if (this.selectedDate) {
-          eventData.event_date = this.formatDateForApi(this.selectedDate) + 'T' + 
-                                (eventData.event_time || '09:00:00');
+          const timeZoneOffset = new Date().getTimezoneOffset();
+          const dateWithOffset = new Date(this.selectedDate.getTime() - timeZoneOffset * 60000);
+          eventData.event_date = this.formatDateForApi(dateWithOffset) + 'T' + 
+                              (eventData.event_time || '09:00:00') + 'Z';
         }
         
         this.http.post('http://127.0.0.1:5000/api/events', eventData)

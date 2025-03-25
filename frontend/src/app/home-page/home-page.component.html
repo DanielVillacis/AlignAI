@@ -58,7 +58,7 @@
                   <div class="event-details">
                     <span *ngIf="event.client_name" class="event-client">{{ event.client_name }}</span>
                     <span *ngIf="event.is_scan" class="event-tag">Scan</span>
-                    <span class="event-time">{{ event.event_date | date:'shortTime' }}</span>
+                    <span class="event-time">{{ event.event_date | date:'shortTime':'UTC' }}</span>
                   </div>
                 </div>
               </div>

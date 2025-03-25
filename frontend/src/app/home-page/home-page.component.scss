@@ -1,3 +1,5 @@
+@use "sass:color";
+
 .fade-in {
   animation: fadeIn 0.7s ease-in-out;
 }
@@ -227,7 +229,7 @@ td {
   transition: background-color 0.3s;
   
   &:hover {
-    background-color: darken(#3EC9B9, 10%);
+    background-color: color.scale(#3EC9B9, $lightness: -10%);
   }
 }
 
@@ -244,17 +246,6 @@ td {
       display: block;
       // margin-bottom: 5px;
       font-weight: bold;
-    }
-    
-    input, select, textarea {
-      // width: 100%;
-      // padding: 8px;
-      // border: 1px solid #ddd;
-      // border-radius: 4px;
-    }
-    
-    textarea {
-      // min-height: 80px;
     }
     
     &.checkbox {
@@ -288,7 +279,7 @@ td {
         color: white;
         
         &:hover {
-          background-color: darken(#3EC9B9, 10%);
+          background-color: color.scale(#3EC9B9, $lightness: -10%);
         }
       }
       
