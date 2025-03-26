@@ -1,0 +1,20 @@
+.theme-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-primary);
+    padding: 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: var(--hover-color);
+    }
+
+    .material-icons {
+      font-size: 24px;
+    }
+}

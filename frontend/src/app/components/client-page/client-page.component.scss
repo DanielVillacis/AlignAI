@@ -16,11 +16,10 @@
 
 .clients-section {
     grid-area: clients;
-    background: rgba(255, 255, 255, 0.4);
+    background: var(--card-background);
     border-radius: 17px;
     padding: 20px;
     height: 92vh;
-    // box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 
@@ -102,6 +101,7 @@
       width: 98%;
       padding: 12px;
       border: 1px solid #ddd;
+      background-color: var(--input-background);
       border-radius: 20px;
       font-size: 16px;
       outline: none;
@@ -117,23 +117,8 @@
   cursor: pointer;
   
   &:hover {
-      background-color: #ffffff7d;
+      background-color: var(--hover-color);
       border-radius: 20px;
-  }
-}
-
-.add-client-btn {
-  padding: 12px 24px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.2s ease;
-  
-  &:hover {
-      background-color: #0056b3;
   }
 }
 
@@ -145,7 +130,7 @@
 
 .button-28 {
   appearance: none;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: var(--button-background);
   border: 1px solid #323232;
   border-radius: 30px;
   box-sizing: border-box;
@@ -177,7 +162,7 @@
 
 .button-28:hover {
   color: #fff;
-  background-color: #1A1A1A;
+  background-color: #3d3d3d;
 }
 
 .button-28:active {

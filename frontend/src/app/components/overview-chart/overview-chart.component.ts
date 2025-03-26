@@ -12,6 +12,7 @@ import {
   ApexTooltip,
   ApexGrid
 } from 'ng-apexcharts';
+import { ThemeService } from '../../services/theme.service';
 
 // Define chart options type
 export type ChartOptions = {
@@ -137,10 +138,13 @@ export class OverviewChartComponent implements OnInit {
   };
 
 
-  constructor() {}
+  constructor(private themeService: ThemeService) {}
 
   ngOnInit(): void {
     this.generateChartData();
+    this.themeService.isDarkMode$.subscribe(isDark => {
+      this.updateChartTheme(isDark);
+    });
   }
 
   generateChartData() {
@@ -155,5 +159,33 @@ export class OverviewChartComponent implements OnInit {
         data: [11, 32, 45, 32, 34, 52, 41, 21, 31, 41, 51, 61]
       }
     ];
+  }
+
+  private updateChartTheme(isDark: boolean) {
+    this.chart = {
+      ...this.chart,
+      foreColor: isDark ? '#ffffff' : '#333333',
+      background: 'transparent',
+    };
+
+    this.xaxis = {
+      ...this.xaxis,
+      labels: {
+        style: {
+          colors: isDark ? '#ffffff' : '#333333'
+        }
+      }
+    };
+
+    this.yaxis = {
+      ...this.yaxis,
+      labels: {
+        style: {
+          colors: isDark ? '#ffffff' : '#333333'
+        }
+      }
+    };
+
+    this.colors = isDark ? ['#3EC9B9', '#FFFFFF'] : ['#3EC9B9', '#303545'] ;
   }
 }

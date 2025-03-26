@@ -16,25 +16,126 @@ html {
 }
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
+
+
+:root {
+  // Light theme variables
+  --background-primary: #ffffff;
+  --background-secondary: #f8f9fa;
+  --sidebar-background: #E2E2E2;
+  --text-primary: #323232;
+  --text-secondary: #666666;
+  --border-color: #454545;
+  --accent-color: #3EC9B9;
+  --hover-color: #f5f5f5;
+  --card-background: rgba(255, 255, 255, 0.4);
+  --input-background: rgba(194, 194, 194, 0.2);
+  --gradient-start: #E2E2E2;
+  --gradient-end: #C9D6FF;
+  --button-background: #ededed;
+}
+
+.dark-theme {
+  --background-primary: #1a1a1a;
+  --background-secondary: #2d2d2d;
+  --sidebar-background: #1a1a1a;
+  --text-primary: #ffffff;
+  --text-secondary: #cccccc;
+  --border-color: #b7b7b7;
+  --accent-color: #3EC9B9;
+  --hover-color: #3d3d3d;
+  --card-background: rgba(45, 45, 45, 0.4);
+  --input-background: rgba(60, 60, 60, 0.2);
+  --gradient-start: #1d1d1d;
+  --gradient-end: #161616;
+  --button-background: #ededed;
+
+  .mat-calendar {
+    background: transparent;
+
+    .mat-calendar-table-header,
+    .mat-calendar-body-label,
+    .mat-calendar-body-cell-content {
+      color: var(--text-primary);
+      th {
+        color: var(--text-primary);
+      }
+    }
+
+    .mat-calendar-body-selected {
+      background-color: var(--accent-color);
+      color: var(--background-primary);
+    }
+
+    .mat-calendar-body-today:not(.mat-calendar-body-selected) {
+      border-color: var(--text-primary);
+    }
+
+    .mat-calendar-arrow {
+      border-top-color: var(--text-primary);
+    }
+
+    .mat-calendar-table-header-divider {
+      color: var(--text-primary);
+    }
+
+    // Days of week row
+    tr[mat-calendar-header-row] th {
+      color: var(--text-primary) !important;
+    }
+
+    .mat-calendar-previous-button,
+    .mat-calendar-next-button,
+    .mat-calendar-period-button {
+      color: var(--text-primary);
+    }
+  }
+}
+
+.mat-calendar {
+  .mat-calendar-body-cell:not(.mat-calendar-body-disabled):hover > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected),
+  .cdk-program-focused .mat-calendar-body-active > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected) {
+    background-color: var(--hover-color);
+  }
+}
+
+// Calendar styles for both themes
+.mat-calendar {
+  background: transparent !important;
+
+  .mat-calendar-table-header {
+    color: var(--text-primary);
+    
+    span {
+      color: var(--text-primary);
+    }
+  }
+
+  .mat-calendar-table-header-divider {
+    color: var(--text-primary);
+  }
+}
+
 * {
   font-family: 'Nunito', sans-serif;
 }
 
 body {
-    margin: 0;
-    padding: 0;
-    min-height: 100vh;
-    width: 100%;
-    display: flex;
-    color: #323232;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background: #C9D6FF;  /* fallback for old browsers */
-    background: -webkit-linear-gradient(to right, #E2E2E2, #C9D6FF);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to right, #E2E2E2, #C9D6FF); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-    font-family: 'Nunito', sans-serif;
-  }
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  color: var(--text-primary);
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: var(--gradient-start);
+  background: -webkit-linear-gradient(to right, var(--gradient-start), var(--gradient-end));
+  background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
+  font-family: 'Nunito', sans-serif;
+  transition: background-color 0.3s, color 0.3s;
+}
 
 app-root {
   // display: flex;
@@ -42,4 +143,9 @@ app-root {
   width: 100%;
 }
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body { margin: 0; }
+
+
+
+
+

@@ -27,10 +27,9 @@
 // Top row sections
 .overview-section,
 .schedule-section {
-  background: rgba(255, 255, 255, 0.4);
+  background: var(--card-background);
   border-radius: 8px;
   padding: 20px;
-  // box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 // Make top row split into two columns
@@ -51,7 +50,7 @@
 
 .scans-section {
   grid-area: scans;
-  background: rgba(255, 255, 255, 0.4);
+  background: var(--card-background);
   border-radius: 8px;
   padding: 20px;
   height: 405px;
@@ -71,6 +70,7 @@
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
+    color: var(--text-primary);
   }
 
   thead {
@@ -81,6 +81,7 @@
     th {
       padding: 12px;
       text-align: left;
+      color: var(--text-primary);
     }
   }
 
@@ -99,11 +100,13 @@
       padding: 12px;
       text-align: left;
       font-weight: lighter;
+      color: var(--text-primary);
 
       &:nth-child(5) { // targets the reason column (5th column)
         > span {
           display: inline-block;
           background-color: #b8f29795;
+          color: #323232;
           padding: 6px 12px;
           border-radius: 16px;
           font-size: 0.9em;
@@ -129,6 +132,7 @@
   margin-top: -5px;
   margin-left: 5px;
   margin-bottom: 0;
+  color: var(--text-primary);
 }
 
 table {
@@ -159,18 +163,24 @@ td {
     
     .schedule-calendar {
       flex: 0.8;
-      // background: rgba(255, 255, 255, 0.3);
+      color: var(--text-primary);
       border-radius: 8px;
       padding: 10px;
-      // box-shadow: 0 1px 2px rgba(157, 157, 157, 0.1);
+      background: transparent;
+    
+      ::ng-deep {
+        .mat-calendar-table-header,
+        .mat-calendar-body-cell {
+          color: var(--text-primary);
+        }
+      }
     }
     
     .schedule-details {
       flex: 1;
-      // background:rgba(255, 255, 255, 0.3);
       border-radius: 8px;
       padding: 20px;
-      // box-shadow: 0 1px 2px rgba(157, 157, 157, 0.1);
+      color: var(--text-primary);
       
       h2 {
         margin-bottom: 16px;
@@ -200,8 +210,8 @@ td {
 }
 
 .add-event-btn {
-  background-color: #3EC9B9;
-  color: white;
+  background-color: var(--accent-color);
+  color: var(--background-primary);
   border: none;
   border-radius: 5px;
   padding: 5px 10px;
@@ -214,18 +224,15 @@ td {
 }
 
 .event-form {
-  background-color: #f5f5f5;
-  // padding: 15px;
+  background: var(--card-background);
   border-radius: 8px;
-  // margin-bottom: 15px;
   
   .form-group {
-    // margin-bottom: 10px;
     
     label {
       display: block;
-      // margin-bottom: 5px;
       font-weight: bold;
+      color: var(--text-primary);
     }
     
     &.checkbox {
@@ -239,6 +246,9 @@ td {
       
       input {
         width: auto;
+        color: var(--text-primary);
+        background: var(--input-background);
+        border-color: var(--border-color);
       }
     }
   }
@@ -255,8 +265,8 @@ td {
       cursor: pointer;
       
       &:first-child {
-        background-color: #3EC9B9;
-        color: white;
+        background-color: var(--accent-color);
+        color: var(--background-primary);
         
         &:hover {
           background-color: color.scale(#3EC9B9, $lightness: -10%);
@@ -264,8 +274,9 @@ td {
       }
       
       &:last-child {
-        background-color: #f5f5f5;
-        border: 1px solid #ddd;
+        background: var(--background-primary);
+        color: var(--text-primary);
+        border: 1px solid var(--border-color);
         
         &:hover {
           background-color: #eee;
@@ -285,11 +296,11 @@ td {
   }
 
   &::-webkit-scrollbar-thumb {
-    background: #ccc;
+    background: var(--border-color);
     border-radius: 10px;
     
     &:hover {
-      background: #999;
+      color: var(--text-secondary);
     }
   }
 }
@@ -298,7 +309,7 @@ td {
 .event-card {
   position: relative;
   padding: 10px 30px 10px 12px; // Add right padding to make room for delete button
-  // Other properties remain the same
+
   
   .event-main {
     text-align: left;
@@ -306,12 +317,13 @@ td {
       margin: 0 0 4px 0;
       font-size: 0.95rem;
       font-weight: 500;
+      color: var(--text-primary);
     }
     
     .event-desc {
       margin: 0 0 6px 0;
       font-size: 0.85rem;
-      color: #666;
+      color: var(--text-secondary);
     }
   }
   
@@ -325,12 +337,13 @@ td {
       font-size: 0.85rem;
       font-weight: 500;
       margin-right: 8px;
+      color: var(--text-primary);
     }
     
     .event-tag {
       display: inline-block;
-      background-color: #3EC9B9;
-      color: white;
+      background-color: var(--accent-color);
+      color: var(--background-primary);
       padding: 1px 6px;
       border-radius: 10px;
       font-size: 0.75rem;
@@ -338,7 +351,7 @@ td {
     }
     
     .event-time {
-      color: #666;
+      color: var(--text-secondary);
       font-size: 0.85rem;
       margin-left: auto; // Push to the right
     }
@@ -348,9 +361,9 @@ td {
     position: absolute; // Position it absolutely within the card
     top: 8px;
     right: 8px;
-    background-color: #f0f0f0;
+    background-color: var(--hover-color);
+    color: var(--text-primary);
     border: none;
-    color: #666;
     font-size: 1.2rem;
     font-weight: bold;
     width: 24px;
@@ -365,8 +378,8 @@ td {
     z-index: 10; // Ensure it's above everything else
     
     &:hover {
-      color: white;
       background-color: #ff3b30;
+      color: var(--background-primary);
     }
   }
   
