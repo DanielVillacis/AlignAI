@@ -18,11 +18,13 @@ def create_app():
     from .routes.scan_routes import scan_bp
     from .routes.event_routes import event_bp
     from .routes.ai_routes import ai_bp
+    from .routes.authentication_routes import auth_bp
     
     app.register_blueprint(client_bp, url_prefix='/api/clients')
     app.register_blueprint(scan_bp, url_prefix='/api/scans')
     app.register_blueprint(event_bp, url_prefix='/api/events')
     app.register_blueprint(ai_bp, url_prefix='/api')
+    app.register_blueprint(auth_bp, url_prefix='/api/auth')
     
     # Create tables
     with app.app_context():
