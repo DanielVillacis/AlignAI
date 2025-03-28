@@ -17,8 +17,17 @@ class Client(db.Model):
     updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
 
     # Relationships
-    scans = db.relationship('Scan', backref='client', lazy=True)
-    events = db.relationship('Event', backref='client', lazy=True)
+    scans = db.relationship(
+        'Scan', 
+        backref='client', 
+        lazy=True,
+        cascade="all, delete-orphan") # to ensure scans are deleted when client is deleted
+    
+    events = db.relationship(
+        'Event', 
+        backref='client', 
+        lazy=True,
+        cascade="all, delete-orphan") # to ensure events are deleted when client is deleted
 
     @property
     def full_name(self):
