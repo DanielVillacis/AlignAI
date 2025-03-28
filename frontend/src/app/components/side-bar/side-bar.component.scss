@@ -53,8 +53,6 @@
   }
 }
 
-// ...existing code...
-
 .logo-container {
   display: flex;
   align-items: center;
@@ -79,4 +77,124 @@
   height: 1px;
   background: var(--border-color);
   opacity: 0.5;
+}
+
+.spacer {
+  flex-grow: 0.87;
+}
+
+.divider {
+  height: 1px;
+  background: var(--border-color);
+  opacity: 0.5;
+  margin: 10px 0;
+}
+
+.user-section {
+  display: flex;
+  align-items: center;
+  padding: 10x;
+  margin-top: 6px;
+  transition: all 0.3s ease;
+  border-radius: 16px;
+  
+  // &:hover {
+  //   background-color: var(--hover-color);
+  // }
+}
+
+.user-avatar {
+  margin-right: 10px;
+  
+  .avatar-placeholder {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: rgb(0, 60, 139);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: bold;
+    font-size: 16px;
+    letter-spacing: -1px;
+  }
+}
+
+.user-info {
+  flex-grow: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  
+  .user-name {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+  
+  .user-occupation {
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+}
+
+.logout-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  position: relative;
+  
+  &:hover {
+    color: var(--accent-color);
+    
+    .tooltip {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+  }
+  
+  i {
+    font-size: 16px;
+  }
+
+  .tooltip {
+    position: absolute;
+    top: -30px;
+    right: -10px;
+    background-color: var(--background-primary);
+    color: var(--text-primary);
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    transform: translateY(5px);
+    pointer-events: none;
+    border: 1px solid var(--border-color);
+    
+    &:after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      right: 12px;
+      width: 8px;
+      height: 8px;
+      background-color: var(--background-primary);
+      transform: rotate(45deg);
+      border-right: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
+    }
+  }
 }

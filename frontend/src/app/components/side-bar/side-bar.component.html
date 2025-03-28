@@ -11,4 +11,25 @@
     <li><a routerLink="/options">Options</a></li>
   </ul>
   <app-theme-toggle></app-theme-toggle>
+
+  <!-- user profile section at the bottom -->
+  <div class="spacer"></div>
+  <div class="divider"></div>
+  <div class="user-section" *ngIf="user">
+    <div class="user-avatar">
+      <!-- should have the option to show a profile picture, not implemented yet. If no picture, we use the first letter of it's first name -->
+      <div class="avatar-placeholder">
+        {{ user.first_name.charAt(0) }}
+        {{ user.last_name.charAt(0) }}
+      </div>
+    </div>
+    <div class="user-info">
+      <div class="user-name">{{ user.first_name }} {{ user.last_name }}</div>
+      <div class="user-occupation">Software Developer</div>
+    </div>
+    <button class="logout-btn" (click)="logout()" title="Logout">
+      <i class="fas fa-sign-out-alt"></i>
+      <span class="tooltip">Logout</span>
+    </button>
+  </div>
 </nav>
