@@ -6,7 +6,9 @@ import { CreateClientPageComponent } from './components/create-client-page/creat
 import { ClientProfileComponent } from './components/client-profile/client-profile.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
+import { OptionsPageComponent } from './components/options-page/options-page.component';
 import { AuthGuard } from './guards/auth.guard';
+
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -16,5 +18,6 @@ export const routes: Routes = [
     { path: 'clients', component: ClientPageComponent, canActivate: [AuthGuard] },
     { path: 'clients/:id', component: ClientProfileComponent, canActivate: [AuthGuard] },
     { path: 'clients/new', component: CreateClientPageComponent, canActivate: [AuthGuard] },
+    { path: 'options', component: OptionsPageComponent, canActivate: [AuthGuard] },
     { path: '**', redirectTo: '' }
 ];

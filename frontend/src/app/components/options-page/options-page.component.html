@@ -1,0 +1,46 @@
+<div class="options-page">
+    <h1>Options</h1>
+    <div class="options-section">
+      <h2>Appearance</h2>
+      <div class="option-item">
+        <label for="theme-toggle">Dark Mode</label>
+        <app-theme-toggle id="theme-toggle"></app-theme-toggle>
+      </div>
+    <h2>Notifications</h2>
+        <div class="option-item">
+            <label for="email-notifications">Email Notifications</label>
+            <mat-slide-toggle id="email-notifications" [(ngModel)]="emailNotifications"></mat-slide-toggle>
+        </div>
+        <div class="option-item">
+            <label for="push-notifications">Push Notifications</label>
+            <mat-slide-toggle id="push-notifications" [(ngModel)]="pushNotifications"></mat-slide-toggle>
+        </div>
+        <h2>Language</h2>
+        <div class="option-item">
+            <label for="language-select">Select Language</label>
+            <mat-select id="language-select" [(value)]="selectedLanguage">
+            <mat-option *ngFor="let language of languages" [value]="language">
+                {{ language }}
+            </mat-option>
+            </mat-select>
+        </div>
+        <div class="options-section">
+            <h2>Account</h2>
+            <div class="option-item">
+              <button mat-raised-button color="primary" (click)="updateProfile()">Update Profile</button>
+            </div>
+            <div class="option-item">
+              <button mat-raised-button color="warn" (click)="changePassword()">Change Password</button>
+            </div>
+        </div>
+        <h2>Data Management</h2>
+        <div class="option-item">
+            <button mat-raised-button color="primary" (click)="exportData()">Export Data</button>
+        </div>
+
+        <h2>Reset</h2>
+        <div class="option-item">
+            <button mat-raised-button color="warn" (click)="resetToDefaults()">Reset to Defaults</button>
+        </div>
+    </div>
+  </div>

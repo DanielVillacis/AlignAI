@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { ThemeToggleComponent } from '../theme-toggle/theme-toggle.component';
 import { AuthService } from '../../services/auth.service';
 import { Subscription } from 'rxjs';
 
@@ -10,8 +9,7 @@ import { Subscription } from 'rxjs';
   selector: 'app-sidebar',
   standalone: true,
   imports: [RouterModule, 
-    CommonModule, 
-    ThemeToggleComponent],
+    CommonModule],
   templateUrl: './side-bar.component.html',
   styleUrls: ['./side-bar.component.scss']
 })

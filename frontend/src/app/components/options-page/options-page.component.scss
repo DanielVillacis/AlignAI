@@ -1,0 +1,52 @@
+.fade-in {
+    animation: fadeIn 0.7s ease-in-out;
+}
+  
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+.options-page {
+    margin-left: 220px; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
+    min-height: 100vh;
+    padding: 2rem;
+    animation: fadeIn 1s ease-in-out;
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      color: var(--text-primary);
+    }
+  
+    .options-section {
+        width: 100%; // Ensure the section spans the available width
+        max-width: 600px; // Limit the width for better readability
+        margin-bottom: 2rem;
+  
+      h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        color: var(--text-secondary);
+      }
+  
+      .option-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem;
+        background: var(--card-background);
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  
+        label {
+          font-size: 1rem;
+          color: var(--text-primary);
+        }
+      }
+    }
+  }
