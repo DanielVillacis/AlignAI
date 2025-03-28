@@ -1,2 +1,4 @@
-<app-sidebar></app-sidebar>
+<div *ngIf="isAuthenticated$ | async">
+    <app-sidebar></app-sidebar>
+</div>
 <router-outlet></router-outlet>

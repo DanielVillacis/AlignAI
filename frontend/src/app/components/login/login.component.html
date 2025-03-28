@@ -53,19 +53,20 @@
           </button>
         </form>
   
-        <mat-divider class="divider">
-          <span>or continue with</span>
-        </mat-divider>
+        <mat-divider class="divider"></mat-divider>
   
         <div class="social-login">
-          <button mat-stroked-button (click)="googleLogin()" class="google-button">
-            <img src="assets/google-icon.png" alt="Google" class="social-icon"> 
-            Google
-          </button>
-          <button mat-stroked-button (click)="appleLogin()" class="apple-button">
-            <img src="assets/apple-icon.png" alt="Apple" class="social-icon"> 
-            Apple
-          </button>
+          <p class="social-login-text">Sign in with:</p>
+          <div class="social-buttons">
+            <button mat-stroked-button (click)="googleLogin()" class="google-button">
+              <fa-icon [icon]="faGoogle" class="social-icon"></fa-icon>
+              Google
+            </button>
+            <button mat-stroked-button (click)="appleLogin()" class="apple-button">
+              <fa-icon [icon]="faApple" class="social-icon"></fa-icon>
+              Apple
+            </button>
+          </div>
         </div>
       </mat-card-content>
   

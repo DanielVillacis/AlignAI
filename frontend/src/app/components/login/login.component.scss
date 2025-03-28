@@ -17,17 +17,20 @@
     background: -webkit-linear-gradient(to right, var(--gradient-start), var(--gradient-end));
     background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
     padding: 20px;
+    text-align: center;
   }
   
   .logo-section {
     display: flex;
+    flex-direction: row;
     align-items: center;
+    justify-content: center;
     margin-bottom: 2rem;
     
     .logo {
       width: 60px;
       height: 60px;
-      margin-right: 15px;
+      margin-right: 10px;
     }
     
     h1 {
@@ -49,6 +52,7 @@
     border: 1px solid rgba(255, 255, 255, 0.18);
     
     mat-card-title {
+      font-family: 'Nunito', sans-serif;
       font-size: 1.8rem;
       font-weight: 500;
       color: var(--text-primary);
@@ -96,6 +100,26 @@
     display: flex;
     gap: 1rem;
     justify-content: center;
+    flex-direction: column;
+    align-items: center;
+
+    .social-login-text {
+      font-size: 1rem;
+      color: var(--text-secondary);
+    }
+
+    .social-buttons {
+      display: flex;
+      gap: 1rem; // Space between the buttons
+      justify-content: center;
+      width: 90%;
+    }
+
+    span {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+    }
     
     button {
       flex: 1;
@@ -114,8 +138,7 @@
       }
       
       .social-icon {
-        width: 20px;
-        height: 20px;
+        font-size: 20px;
       }
     }
   }

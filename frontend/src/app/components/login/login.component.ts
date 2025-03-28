@@ -11,7 +11,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../../services/auth.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-
+import { faGoogle, faApple, }  from '@fortawesome/free-brands-svg-icons';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @Component({
   selector: 'app-login',
@@ -25,7 +26,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatInputModule,
     MatDividerModule,
     MatIconModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    FontAwesomeModule
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
@@ -36,6 +38,8 @@ export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   isLoading = false;
   hidePassword = true;
+  faGoogle = faGoogle;
+  faApple = faApple;
 
   constructor(
     private fb: FormBuilder,
