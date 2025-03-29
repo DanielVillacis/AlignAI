@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -13,6 +13,16 @@ import { AuthService } from '../../../services/auth.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { faGoogle, faApple, }  from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { Meta } from '@angular/platform-browser';
+import { environment } from '../../../../environments/environment';
+
+
+declare global {
+  interface Window {
+    google?: any;
+    AppleID?: any;
+  }
+}
 
 @Component({
   selector: 'app-login',
@@ -34,22 +44,45 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 })
 
 
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, AfterViewInit {
   loginForm: FormGroup;
   isLoading = false;
   hidePassword = true;
   faGoogle = faGoogle;
   faApple = faApple;
 
+  private googleClientId = environment.googleClientId; // Replace with your Google client ID fromt environment.ts
+  private appleClientId = environment.appleClientId; // Replace with your Apple client ID from environment.ts
+  private appleRedirectUri = environment.appleRedirectUri; // Replace with your Apple redirect URI from environment.ts
+
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private meta: Meta
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
+    });
+
+    // Meta tag for sing-in
+    this.meta.addTag({
+      name: 'appleid-signin-client-id',
+      content: this.appleClientId
+    });
+    this.meta.addTag({
+      name: 'appleid-signin-scope',
+      content: 'name email'
+    });
+    this.meta.addTag({
+      name: 'appleid-signin-redirect-uri',
+      content: this.appleRedirectUri
+    });
+    this.meta.addTag({
+      name: 'appleid-signin-state',
+      content: 'signin'
     });
   }
 
@@ -58,6 +91,68 @@ export class LoginComponent implements OnInit {
     if (this.authService.isAuthenticated()) {
       this.router.navigate(['/']);
     }
+  }
+
+  ngAfterViewInit(): void {
+    this.initGoogleSignIn();
+    this.initAppleSignIn();
+  }
+
+  private initGoogleSignIn(): void {
+    if (window.google) {
+      window.google.accounts.id.initialize({
+        client_id: this.googleClientId,
+        callback: this.handleGoogleSignIn.bind(this),
+        auto_select: false,
+        cancel_on_tap_outside: true
+      });
+      
+      window.google.accounts.id.renderButton(
+        document.getElementById("google-signin-button"),
+        { theme: "outline", size: "large", width: '100%' }
+      );
+    } else {
+      // If Google library isn't loaded yet, try again after a short delay
+      setTimeout(() => this.initGoogleSignIn(), 100);
+    }
+  }
+
+  private initAppleSignIn(): void {
+    if (window.AppleID) {
+      try {
+        window.AppleID.auth.init({
+          clientId: this.appleClientId,
+          scope: 'name email',
+          redirectURI: this.appleRedirectUri,
+          state: 'signin'
+        });
+      } catch (error) {
+        console.error('Error initializing Apple Sign-In:', error);
+      }
+    } else {
+      // If Apple library isn't loaded yet, try again after a short delay
+      setTimeout(() => this.initAppleSignIn(), 100);
+    }
+  }
+
+  private handleGoogleSignIn(response: any): void {
+    // Extract the ID token
+    const idToken = response.credential;
+    
+    this.isLoading = true;
+    
+    // Call your service method
+    this.authService.googleLogin(idToken).subscribe({
+      next: () => {
+        this.router.navigate(['/']);
+      },
+      error: (error) => {
+        this.isLoading = false;
+        this.snackBar.open(error?.error?.error || 'Google login failed', 'Close', {
+          duration: 5000
+        });
+      }
+    });
   }
 
   onSubmit(): void {
@@ -81,16 +176,52 @@ export class LoginComponent implements OnInit {
     });
   }
 
+
+
+
   googleLogin(): void {
-    // Implement Google Sign-In
-    // This requires Google OAuth library integration
-    // To be implemented with Google's OAuth client libraries
+    // Trigger Google Sign-In
+    if (window.google) {
+      window.google.accounts.id.prompt();
+    } else {
+      this.snackBar.open('Google Sign-In is not available', 'Close', {
+        duration: 5000
+      });
+    }
   }
 
   appleLogin(): void {
-    // Implement Apple Sign-In
-    // This requires Apple OAuth library integration
-    // To be implemented with Apple's OAuth client libraries
+    try {
+      window.AppleID.auth.signIn().then((response: any) => {
+        // Extract identity token and user info
+        const { authorization } = response;
+        const identityToken = authorization.id_token;
+        
+        this.isLoading = true;
+        
+        this.authService.appleLogin(identityToken).subscribe({
+          next: () => {
+            this.router.navigate(['/']);
+          },
+          error: (error) => {
+            this.isLoading = false;
+            this.snackBar.open(error?.error?.error || 'Apple login failed', 'Close', {
+              duration: 5000
+            });
+          }
+        });
+      }).catch((error: any) => {
+        console.error('Apple Sign-In error:', error);
+        this.snackBar.open('Apple Sign-In failed', 'Close', {
+          duration: 5000
+        });
+      });
+    } catch (error) {
+      console.error('Error with Apple Sign-In:', error);
+      this.snackBar.open('Apple Sign-In is not available', 'Close', {
+        duration: 5000
+      });
+    }
   }
 
   goToSignup(): void {
