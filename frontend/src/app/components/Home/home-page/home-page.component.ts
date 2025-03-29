@@ -7,9 +7,9 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { CreateEventFormComponent } from '../create-event-form/create-event-form.component';
 import { OverviewChartComponent } from '../overview-chart/overview-chart.component';
-import { ClientService } from '../../services/client.service';
-import { EventService } from '../../services/event.service';
-import { ScanService } from '../../services/scan.service';
+import { ClientService } from '../../../services/client.service';
+import { EventService } from '../../../services/event.service';
+import { ScanService } from '../../../services/scan.service';
 
 @Component({
   selector: 'app-home',

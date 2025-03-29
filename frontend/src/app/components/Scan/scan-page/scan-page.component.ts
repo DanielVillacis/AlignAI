@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ScanService } from '../../services/scan.service';
+import { ScanService } from '../../../services/scan.service';
 
 @Component({
   selector: 'scan-page',

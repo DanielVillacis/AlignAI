@@ -3,7 +3,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { ClientService } from '../../services/client.service';
+import { ClientService } from '../../../services/client.service';
 
 @Component({
   selector: 'app-create-client-page',

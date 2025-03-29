@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { SideBarComponent } from '../side-bar/side-bar.component'
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../../services/auth.service';
 import { map, Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
 

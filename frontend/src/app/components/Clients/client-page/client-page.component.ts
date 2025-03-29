@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ClientService } from '../../services/client.service';
+import { ClientService } from '../../../services/client.service';
 
 @Component({
   selector: 'app-client-page',

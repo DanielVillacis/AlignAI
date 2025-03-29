@@ -12,7 +12,7 @@ import {
   ApexTooltip,
   ApexGrid
 } from 'ng-apexcharts';
-import { ThemeService } from '../../services/theme.service';
+import { ThemeService } from '../../../services/theme.service';
 
 // Define chart options type
 export type ChartOptions = {

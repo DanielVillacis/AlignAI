@@ -1,12 +1,12 @@
 import { Routes } from '@angular/router';
-import { HomePageComponent } from './components/home-page/home-page.component';
-import { ScanPageComponent } from './components/scan-page/scan-page.component';
-import { ClientPageComponent } from './components/client-page/client-page.component';
-import { CreateClientPageComponent } from './components/create-client-page/create-client-page.component';
-import { ClientProfileComponent } from './components/client-profile/client-profile.component';
-import { LoginComponent } from './components/login/login.component';
-import { RegisterComponent } from './components/register/register.component';
-import { OptionsPageComponent } from './components/options-page/options-page.component';
+import { HomePageComponent } from './components/Home/home-page/home-page.component';
+import { ScanPageComponent } from './components/Scan/scan-page/scan-page.component';
+import { ClientPageComponent } from './components/Clients/client-page/client-page.component';
+import { CreateClientPageComponent } from './components/Clients/create-client-page/create-client-page.component';
+import { ClientProfileComponent } from './components/Clients/client-profile/client-profile.component';
+import { LoginComponent } from './components/Login/login/login.component';
+import { RegisterComponent } from './components/Login/register/register.component';
+import { OptionsPageComponent } from './components/Options/options-page/options-page.component';
 import { AuthGuard } from './guards/auth.guard';
 
 
