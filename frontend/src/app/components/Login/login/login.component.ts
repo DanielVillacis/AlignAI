@@ -14,7 +14,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { faGoogle, faApple, }  from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { Meta } from '@angular/platform-browser';
-import { environment } from '../../../../environments/environment';
+import { environment } from '../../../../environments/environment.local';
 
 
 declare global {
