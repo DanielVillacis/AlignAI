@@ -10,9 +10,9 @@ The project is currently under supervision of Pre. Nadia Tahiri, a professor at 
 
 <details> 
   <summary>Small spoiler so far</summary>
-   <img width="1710" alt="Screenshot 2025-03-27 at 18 04 45" src="https://github.com/user-attachments/assets/58d1f6e3-816b-41d6-bd8c-2b2b75928d93" />
+    ![image](https://github.com/user-attachments/assets/9b8e562b-1ed1-461c-b0bf-7fec557f9f5a)
     Oh, and we got dark mode too ;) 
-   <img width="1710" alt="Screenshot 2025-03-27 at 18 07 51" src="https://github.com/user-attachments/assets/98ffd26c-0a46-42f1-b72f-625b1eabedb7" />
+    ![image](https://github.com/user-attachments/assets/81b3d364-f91c-4975-b402-e113a2399597)
 </details>
 
 ## Table of contents (WIP)
