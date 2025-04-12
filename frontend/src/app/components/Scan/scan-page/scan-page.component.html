@@ -1,6 +1,54 @@
-<div class="container fade-in">
-    <div class="buttons-container">
-      <!-- <button type="submit" class="button-74">Create Client</button> -->
-      <button class="button-28" (click)="launchScan()">Start a Scan</button>
+<div class="content">
+  <div class="scan-section">
+    <h1 class="section-title">Start a New Scan</h1>
+    
+    <div class="scan-form-container">
+      <form [formGroup]="scanForm">
+        <!-- Client Selection -->
+        <div class="form-group">
+          <label for="client">Select Patient</label>
+          <select id="client" formControlName="clientId" class="form-control">
+            <option value="">-- Select a patient --</option>
+            <option *ngFor="let client of clients" [value]="client.id">
+              {{ client.first_name }} {{ client.last_name }}
+            </option>
+          </select>
+          <div *ngIf="scanForm.get('clientId')?.invalid && scanForm.get('clientId')?.touched" class="error-message">
+            Please select a patient
+          </div>
+        </div>
+        
+        <!-- Scan Reason -->
+        <div class="form-group">
+          <label for="reason">Reason for Scan</label>
+          <textarea id="reason" formControlName="scanReason" class="form-control" rows="3" 
+                   placeholder="Enter the reason for this mobility assessment"></textarea>
+          <div *ngIf="scanForm.get('scanReason')?.invalid && scanForm.get('scanReason')?.touched" class="error-message">
+            Please enter a reason for the scan
+          </div>
+        </div>
+        
+        <!-- Submit Button -->
+        <div class="buttons-container">
+          <button type="submit" class="button-28" 
+                 [disabled]="scanForm.invalid || isSubmitting"
+                 (click)="launchScan()">
+            <span *ngIf="!isSubmitting">Start Scan</span>
+            <span *ngIf="isSubmitting">Starting scan...</span>
+          </button>
+        </div>
+      </form>
     </div>
+    
+    <!-- Selected Client Info (shows when a client is selected) -->
+    <div class="client-preview" *ngIf="selectedClient">
+      <h3>Patient Information</h3>
+      <div class="client-details">
+        <p><strong>Name:</strong> {{ selectedClient.first_name }} {{ selectedClient.last_name }}</p>
+        <p><strong>Age:</strong> {{ selectedClient.age }}</p>
+        <p><strong>Gender:</strong> {{ selectedClient.gender }}</p>
+        <p><strong>Medical History:</strong> {{ selectedClient.previous_conditions || 'None' }}</p>
+      </div>
+    </div>
+  </div>
 </div>

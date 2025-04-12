@@ -15,8 +15,12 @@ export class ScanService {
     return this.http.get<any[]>(`${this.apiUrl}/scans`);
   }
 
-  launchScan(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/run-script`);
+  launchScan(clientId: number, scanReason: string): Observable<any> {
+    console.log(`Launching scan for client ${clientId} with reason  ${scanReason}`)
+    return this.http.post(`${this.apiUrl}/ai/run-script`, {
+      client_id: clientId,
+      scan_reason: scanReason
+    });
   }
 
   getScanById(id: number): Observable<any> {
