@@ -24,3 +24,9 @@ class ScanService:
     def delete_scan(scan):
         db.session.delete(scan)
         db.session.commit()
+
+    @staticmethod
+    def get_latest_scan_for_client(client_id):
+        return Scan.query.filter_by(client_id=client_id).order_by(Scan.created_at.desc()).first()
+    
+    
