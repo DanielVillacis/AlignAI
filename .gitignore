@@ -1,2 +1,5 @@
 # Environment files
 /frontend/src/environments/environment.ts
+
+# reports files
+/reports/
