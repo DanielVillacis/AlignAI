@@ -16,8 +16,8 @@ export const routes: Routes = [
     { path: '', component: HomePageComponent, canActivate: [AuthGuard] },
     { path: 'scan', component: ScanPageComponent, canActivate: [AuthGuard] },
     { path: 'clients', component: ClientPageComponent, canActivate: [AuthGuard] },
-    { path: 'clients/:id', component: ClientProfileComponent, canActivate: [AuthGuard] },
     { path: 'clients/new', component: CreateClientPageComponent, canActivate: [AuthGuard] },
+    { path: 'clients/:id', component: ClientProfileComponent, canActivate: [AuthGuard] },
     { path: 'options', component: OptionsPageComponent, canActivate: [AuthGuard] },
     { path: '**', redirectTo: '' }
 ];

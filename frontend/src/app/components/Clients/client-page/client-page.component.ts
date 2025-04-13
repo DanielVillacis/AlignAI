@@ -58,6 +58,6 @@ export class ClientPageComponent implements OnInit {
   }
 
   navigateToCreateNewClient() {
-    this.router.navigate(['clients/new']);
+    this.router.navigate(['/clients/new']);
   }
 }
