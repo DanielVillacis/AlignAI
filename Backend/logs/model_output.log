@@ -1,0 +1,47 @@
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1744569715.981815 7850586 gl_context.cc:369] GL version: 2.1 (2.1 Metal - 89.3), renderer: Apple M2
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+2025-04-13 14:41:56.031 Python[35533:7850586] WARNING: AVCaptureDeviceTypeExternal is deprecated for Continuity Cameras. Please use AVCaptureDeviceTypeContinuityCamera and add NSCameraUseContinuityCameraDeviceType to your Info.plist.
+W0000 00:00:1744569716.035820 7850690 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1744569716.053462 7850691 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1744569716.615050 7850695 landmark_projection_calculator.cc:186] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+2025-04-13 14:41:56.871 Python[35533:7850586] +[IMKClient subclass]: chose IMKClient_Modern
+2025-04-13 14:41:56.871 Python[35533:7850586] +[IMKInputSession subclass]: chose IMKInputSession_Modern
+/Users/danielvillacis/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+Received argument: {"client_id": 1, "scan_reason": "jhkjh"}
+Running assessment for client ID: 1
+Scan reason: jhkjh
+Min Knee Angle: 93.90079637994585, Depth Score: 25
+Spine Angle: 27.996932952328905, Spine Score: 5
+Knee Position: -0.0736227035522461, Knee Position Score: 25
+Movement Smoothness: 6.097757327264997, Consistency Score: 1.706728018205009
+Min Knee Angle: 94.45979505529434, Depth Score: 25
+Spine Angle: 45.681934865190556, Spine Score: 15
+Knee Position: -0.0650436282157898, Knee Position Score: 25
+Movement Smoothness: 7.8604520683753005, Consistency Score: 0
+Min Knee Angle: 112.52335673002405, Depth Score: 20
+Spine Angle: 103.70547608515284, Spine Score: 5
+Knee Position: -0.09906303882598877, Knee Position Score: 25
+Movement Smoothness: 4.974036160910044, Consistency Score: 5.077891517269867
+Average Spine Angle during squats: 77.3, Posture Score: 63.0%
+Scan completed, generating PDF...
+Scan report saved to : ../reports/alignai_scan_20250413_144235.pdf
+Scan report saved to: ../reports/alignai_scan_20250413_144235.pdf 
+Scan completed, generating PDF...
+Creating app context for client ID: 1
+Found client: Daniel Villacis
+Scan report saved to : ../reports/client_1_scan_20250413_144235.pdf
+Scan report saved to: ../reports/client_1_scan_20250413_144235.pdf
+Creating new Flask app context
+Saving scan to database for client 1...
+Scan saved to database with ID: 21
+{
+    "balance_score": 96.50682578126853,
+    "stepping_score": 74.2534522343121,
+    "squat_score": 58.92820651182496,
+    "posture_score": 63.01946364259014,
+    "overall_score": 72.97242418596068,
+    "report_pdf": "../reports/client_1_scan_20250413_144235.pdf",
+    "scan_id": 21
+}

@@ -9,7 +9,7 @@ def create_app():
     app.config.from_object(Config)
 
     # Initialize extensions
-    CORS(app)
+    CORS(app, resources={r"/api/*": {"origins": "*"}})
     db.init_app(app)
     Migrate(app, db)
     
@@ -23,7 +23,7 @@ def create_app():
     app.register_blueprint(client_bp, url_prefix='/api/clients')
     app.register_blueprint(scan_bp, url_prefix='/api/scans')
     app.register_blueprint(event_bp, url_prefix='/api/events')
-    app.register_blueprint(ai_bp, url_prefix='/api')
+    app.register_blueprint(ai_bp, url_prefix='/api/ai')
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     
     # Create tables

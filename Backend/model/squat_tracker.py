@@ -22,62 +22,36 @@ class SquatTracker:
     def add_frame_data(self, landmarks, mp_pose):
         """ Adds data of a frame to the respective lists for analysis """
         left_shoulder = landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value]
-        right_shoulder = landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value]
         left_hip = landmarks[mp_pose.PoseLandmark.LEFT_HIP.value]
-        right_hip = landmarks[mp_pose.PoseLandmark.RIGHT_HIP.value]
         left_knee = landmarks[mp_pose.PoseLandmark.LEFT_KNEE.value]
-        right_knee = landmarks[mp_pose.PoseLandmark.RIGHT_KNEE.value]
         left_ankle = landmarks[mp_pose.PoseLandmark.LEFT_ANKLE.value]
-        right_ankle = landmarks[mp_pose.PoseLandmark.RIGHT_ANKLE.value]
         left_foot = landmarks[mp_pose.PoseLandmark.LEFT_FOOT_INDEX.value]
-        right_foot = landmarks[mp_pose.PoseLandmark.RIGHT_FOOT_INDEX.value]
         
-        # track hip position
-        hip_center = [(left_hip.y + right_hip.y)/2]
-        self.hip_positions.append(hip_center[0])
+        # track left hip position
+        self.hip_positions.append(left_hip.y)
         
-        # track knee angle (left & right) for depth during the squat
+        # track knee angle (left) for depth during the squat
         left_knee_angle = calculate_angles(
             [left_hip.x, left_hip.y], 
             [left_knee.x, left_knee.y], 
             [left_ankle.x, left_ankle.y]
         )
-        right_knee_angle = calculate_angles(
-            [right_hip.x, right_hip.y], 
-            [right_knee.x, right_knee.y], 
-            [right_ankle.x, right_ankle.y]
-        )
-
-        avg_knee_angle = (left_knee_angle + right_knee_angle) / 2
-        self.knee_angles.append(avg_knee_angle)
+        self.knee_angles.append(left_knee_angle)
         
         # track spine angle
-        left_spine_angle = calculate_angles(
+        spine_angle = calculate_angles(
             [left_shoulder.x, left_shoulder.y],
             [left_hip.x, left_hip.y],
-            [left_knee.x, left_knee.y]
+            [0, left_hip.y]  # Vertical reference point
         )
-        right_spine_angle = calculate_angles(
-            [right_shoulder.x, right_shoulder.y],
-            [right_hip.x, right_hip.y],
-            [right_knee.x, right_knee.y]
-        )
-        avg_spine_angle = (left_spine_angle + right_spine_angle) / 2
-        self.spine_angles.append(avg_spine_angle)
+        self.spine_angles.append(spine_angle)
         
         # track knee alignment
-        ankle_width = abs(right_ankle.x - left_ankle.x)
-        if ankle_width > 0:
-            # left knee tracking (negative = inward collapse, positive = outward)
-            left_knee_align = (left_knee.x - left_ankle.x) / ankle_width
-            # right knee tracking (negative = outward, positive = inward collapse)
-            right_knee_align = (right_ankle.x - right_knee.x) / ankle_width
-            
-            self.knee_tracking['left'].append(left_knee_align)
-            self.knee_tracking['right'].append(right_knee_align)
+        knee_forward_position = left_knee.x - left_ankle.x
+        self.knee_tracking['left'].append(knee_forward_position)
         
         # track arm & shoulder stability
-        shoulder_height = (left_shoulder.y + right_shoulder.y) / 2
+        shoulder_height = (left_shoulder.y)
         self.arm_angles.append(shoulder_height)
         
 
@@ -147,60 +121,63 @@ class SquatTracker:
         
         # 1. depth Score (0-30 points): based on knee angle
         # ideal: 70-90 degrees, Poor: >110 degrees
-        if min_knee_angle < 70:
-            depth_score = 25  # very deep squat (might be too deep for some)
-        elif min_knee_angle < 90:
+        if min_knee_angle < 90:
             depth_score = 30  # perfect squat depth
         elif min_knee_angle < 110:
-            depth_score = 20  # good squat depth
+            depth_score = 25  # good squat depth
         elif min_knee_angle < 130:
-            depth_score = 15  # fair squat depth
+            depth_score = 20  # fair squat depth
         else:
-            depth_score = 10  # poor squat depth
+            depth_score = 15  # poor squat depth
             
         # 2. back Angle Score (0-25 points): based on the spine angle
         # get spine angle at the deepest point of the squat
         spine_angle = self.spine_angles[-30:][min_knee_angle_index]
-        
-        # ideal: 10-20 degrees (forward lean)
-        if 10 <= spine_angle <= 20:
-            spine_score = 25  # perfect spine position
-        elif 5 <= spine_angle < 10 or 20 < spine_angle <= 25:
-            spine_score = 20  # good spine position
-        elif 0 <= spine_angle < 5 or 25 < spine_angle <= 35:
-            spine_score = 15  # fair spine position
+
+        # Ideal: 25-45 degrees of forward lean for side view
+        if 65 <= spine_angle <= 75:
+            spine_score = 25  # perfect spine angle
+        elif 55 <= spine_angle < 65 or 75 < spine_angle <= 85:
+            spine_score = 20  # good spine angle
+        elif 45 <= spine_angle < 55 or 85 < spine_angle <= 95:
+            spine_score = 15  # fair spine angle
         else:
-            spine_score = 10  # poor spine position (too vertical or too much forward lean)
+            spine_score = 5  # poor spine angle
             
-        # 3. knee Tracking Score (0-25 points): based on knee alignment
-        if len(self.knee_tracking['left']) > 10 and len(self.knee_tracking['right']) > 10:
-            # get knee tracking at deepest squat
-            left_align = self.knee_tracking['left'][-30:][min_knee_angle_index]
-            right_align = self.knee_tracking['right'][-30:][min_knee_angle_index]
+        # 3. Knee Position Score (0-25 points) - replace knee valgus with knee-over-toe
+        if len(self.knee_tracking['left']) > 10:
+            # Get knee position at deepest squat 
+            knee_position = self.knee_tracking['left'][-30:][min_knee_angle_index]
             
-            # check for knees caving in
-            # for left knee: negative value means inward collapse
-            # for right knee: positive value means inward collapse
-            left_valgus = min(0, left_align)  # only negative values (inward collapse)
-            right_valgus = max(0, right_align)  # only positive values (inward collapse)
-            
-            # calculate knee tracking score
-            # lower is better
-            knee_tracking_score = 25 - min(25, (abs(left_valgus) + abs(right_valgus)) * 50)
+            # Assess if knees are too far forward or not enough
+            # Slight forward position is good, too much or too little is bad
+            if -0.1 < knee_position < 0.3:  # Ideal: knees slightly ahead of ankles
+                knee_position_score = 25
+            elif 0.3 <= knee_position < 0.5:  # A bit too forward
+                knee_position_score = 20
+            elif -0.2 <= knee_position <= -0.1 or 0.5 <= knee_position < 0.6:  # Either too back or forward
+                knee_position_score = 15
+            else:  # Way too far forward or back
+                knee_position_score = 10
         else:
-            knee_tracking_score = 15  # default 
+            knee_position_score = 15  # default
             
         # 4. movement consistency score (0-20 points)
         # check if the movement was smooth based on angle variance
         angle_diffs = np.diff(self.knee_angles[-30:])
-        movement_smoothness = np.var(angle_diffs)
+        movement_smoothness = np.sqrt(np.mean(np.square(angle_diffs)))
         
         # lower variance = smoother movement = higher score
-        consistency_score = 20 - min(20, movement_smoothness * 10)
+        consistency_score = 20 - min(20, movement_smoothness * 3)
         
         # calculate total score
-        total_quality_score = depth_score + spine_score + knee_tracking_score + consistency_score
+        total_quality_score = depth_score + spine_score + knee_position_score + consistency_score
         
+        print(f"Min Knee Angle: {min_knee_angle}, Depth Score: {depth_score}")
+        print(f"Spine Angle: {spine_angle}, Spine Score: {spine_score}")
+        print(f"Knee Position: {knee_position}, Knee Position Score: {knee_position_score}")
+        print(f"Movement Smoothness: {movement_smoothness}, Consistency Score: {consistency_score}")
+
         return total_quality_score
     
 

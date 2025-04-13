@@ -14,7 +14,10 @@ def create_scan():
 @scan_bp.route('', methods=['GET'])
 def get_scans():
     scans = ScanService.get_all_scans()
-    return jsonify([scan.to_dict() for scan in scans])
+    # pour debug
+    result = [scan.to_dict() for scan in scans]
+    print(f"Found {len(result)} scans")
+    return jsonify(result)
 
 @scan_bp.route('/<int:id>', methods=['GET'])
 def get_scan(id):

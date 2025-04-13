@@ -4,6 +4,9 @@ import numpy as np
 import time
 from enum import Enum
 import json
+import sys
+import os
+import traceback
 from PIL import Image, ImageDraw, ImageFont
 
 from balance_tracker import BalanceTracker
@@ -22,11 +25,30 @@ class ExerciseState(Enum):
 def add_modern_text(
         cv2_image, 
         text, position, 
-        font_path="../fonts/Nunito-Bold.ttf",   
+        font_path=None,   
         font_size=20, 
         text_color=(255, 255, 255), 
         with_background=False
     ):
+
+    # Use absolute path to font file
+    if font_path is None:
+        # Get the directory of the current script
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        # Construct absolute path to font file
+        font_path = os.path.join(script_dir, "..", "fonts", "Nunito-Bold.ttf")
+
+    # Check if font file exists
+    if not os.path.isfile(font_path):
+        print(f"Warning: Font file not found at {font_path}, using default font")
+        # Use a default font that's guaranteed to be available
+        font = ImageFont.load_default()
+    else:
+        try:
+            font = ImageFont.truetype(font_path, font_size)
+        except Exception as e:
+            print(f"Error loading font: {str(e)}, using default font")
+            font = ImageFont.load_default()
     
     rgb_image = cv2.cvtColor(cv2_image, cv2.COLOR_BGR2RGB)
     pil_image = Image.fromarray(rgb_image)
@@ -90,7 +112,6 @@ def run_assessment():
     current_state = ExerciseState.WAITING
     state_start_time = time.time()
     instructions = "Get ready for stepping exercise"
-
     
     # assessment results dictionary
     assessment_results = {
@@ -119,10 +140,13 @@ def run_assessment():
     
     window_name = 'AlignAI Assessment'
     cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
+    cv2.resizeWindow(window_name, display_width, display_height)
+
+    cv2.setWindowProperty(window_name, cv2.WND_PROP_TOPMOST, 1)
     
     with mp_pose.Pose(min_detection_confidence=0.6, min_tracking_confidence=0.6) as pose:
         # webcam activation
-        cap = cv2.VideoCapture(1)  # use 1 for built-in webcam, 0 for usb or external
+        cap = cv2.VideoCapture(0)  # use 1 for built-in webcam, 0 for usb or external
         
         start_time = time.time()
         
@@ -174,18 +198,41 @@ def run_assessment():
                         assessment_results["stepping_score"] = step_tracker.get_stepping_score()
                         assessment_results["squat_score"] = squat_tracker.get_squat_score()
                         
-                        # calculate spine deviation
-                        spine_angle = calculate_spine_angle(landmarks, mp_pose)
-                        posture_score = 100 - min(100, abs(spine_angle - 180) * 2)
+
+                        if squat_tracker.spine_angles:
+                            # calculate spine deviation
+                            spine_angles = squat_tracker.spine_angles[-90:]
+
+                            squat_spine_angles = [angle for angle in spine_angles if 40 <= angle <= 100]
+
+                            if squat_spine_angles:
+                                avg_spine_angle = sum(squat_spine_angles) / len(squat_spine_angles)
+
+                                if 55 <= avg_spine_angle <= 75:
+                                    posture_score = 100
+                                else:
+                                    posture_score = max(15, 100 - min(85, abs(avg_spine_angle - 65) * 3))
+
+                                print(f"Average Spine Angle during squats: {avg_spine_angle:.1f}, Posture Score: {posture_score:.1f}%")
+                            else:    
+                                posture_score = 50 
+                                print("No valid squat spine angles found, using default score")  
+
+                        else:
+                            # Fallback if no spine angles recorded
+                            posture_score = 50
+                            print("No spine angles recorded, using default score")    
+
+
                         assessment_results["posture_score"] = posture_score
                         
                         # calculate overall score
-                        assessment_results["overall_score"] = np.mean([
-                            assessment_results["balance_score"],
-                            assessment_results["stepping_score"],
-                            assessment_results["squat_score"],
-                            assessment_results["posture_score"]
-                        ])
+                        assessment_results["overall_score"] = (
+                            assessment_results["balance_score"] * 0.25 +
+                            assessment_results["stepping_score"] * 0.25 +
+                            assessment_results["squat_score"] * 0.3 +   # plus haut pour les squats
+                            assessment_results["posture_score"] * 0.2
+                        )
                         
                 # start stepping after 5 seconds of preparation
                 elif current_state == ExerciseState.WAITING and current_time - state_start_time > 5:
@@ -369,9 +416,331 @@ def run_assessment():
         # clean up the opencv resources
         cap.release()
         cv2.destroyAllWindows()
+
+        # ajout du pdf
+        if current_state == ExerciseState.COMPLETED:
+            print("Scan completed, generating PDF...")
+            try:
+                pdf_path = generate_scan_pdf(assessment_results)
+                assessment_results['report_pdf'] = pdf_path
+                print(f"Scan report saved to: {pdf_path} ")
+            except Exception as e:
+                print(f"Error generating PDF report: {str(e)}")
         
         return assessment_results
+    
+
+def generate_scan_pdf(assessment_results, client_id=None, scan_reason="Consult", output_dir = '../reports'):
+    """ Generates a pdf report with the assessment results """
+    from reportlab.lib.pagesizes import letter
+    from reportlab.lib import colors
+    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image, Flowable
+    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+    from reportlab.lib.units import inch
+    from reportlab.graphics.shapes import Drawing
+    from reportlab.graphics.charts.piecharts import Pie
+    from reportlab.graphics.charts.barcharts import VerticalBarChart
+    from datetime import datetime
+    import os
+
+    os.makedirs(output_dir, exist_ok=True)
+
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+    client_info_added = False
+
+
+    styles = getSampleStyleSheet()
+
+
+    styles['Title'].fontName = 'Helvetica-Bold'
+    styles['Title'].fontSize = 24
+    styles['Title'].alignment = 1
+    styles['Title'].spaceAfter = 20
+    
+    styles['Heading1'].fontName = 'Helvetica-Bold'
+    styles['Heading1'].fontSize = 18
+    styles['Heading1'].spaceAfter = 10
+    
+    styles['Heading2'].fontName = 'Helvetica-Bold'
+    styles['Heading2'].fontSize = 14
+    styles['Heading2'].spaceAfter = 8
+    
+    styles['Normal'].fontName = 'Helvetica'
+    styles['Normal'].fontSize = 12
+    styles['Normal'].spaceAfter = 6
+
+
+    elements = []
+
+    title = Paragraph("AlignAI Body Mobility Report", styles['Title'])
+    elements.append(title)
+
+    if client_id is not None:
+        try:
+            client_id = int(client_id)
+            sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            
+            try:
+                # import des client services
+                from app.services.client_services import ClientService
+                from app import create_app
+
+                # Create a Flask app context
+                print(f"Creating app context for client ID: {client_id}")
+                app = create_app()
+                with app.app_context():
+                    client = ClientService.get_client_by_id(client_id)
+                    if client:
+                        print(f"Found client: {client.first_name} {client.last_name}")
+
+                        client_info = [
+                            ["Patient:", f"{client.first_name} {client.last_name}"],
+                            ["Age:", f"{client.age}"],
+                            ["Gender:", f"{client.gender}"],
+                            ["Reason:", f"{scan_reason}"],
+                            ["Medical History:", f"{client.previous_conditions or 'None'}"]
+                        ]
+                        
+                        client_table = Table(client_info, colWidths=[100, 400])
+                        client_table.setStyle(TableStyle([
+                            ('BACKGROUND', (0, 0), (0, -1), colors.lightgrey),
+                            ('PADDING', (0, 0), (-1, -1), 6),
+                            ('GRID', (0, 0), (-1, -1), 0.5, colors.grey)
+                        ]))
+                        
+                        elements.append(client_table)
+                        elements.append(Spacer(1, 0.2*inch))
+                        client_info_added = True
+
+                        pdf_filename = f"{output_dir}/client_{client_id}_scan_{timestamp}.pdf"
+
+                    else:
+                        print(f"Client with ID {client_id} not found")
+                        pdf_filename = f"{output_dir}/alignai_scan_{timestamp}.pdf"
+
+            except ImportError as e:
+                print(f"Import error: {e}")
+                print("Warning: Could not import Flask app modules. Client info will not be included in the report.")    
+                pdf_filename = f"{output_dir}/alignai_scan_{timestamp}.pdf"
+        except Exception as e:
+            print(f"Warning: Invalid client ID {client_id}. Cannot convert to integer. {str(e)}")
+            pdf_filename = f"{output_dir}/alignai_scan_{timestamp}.pdf"
+    else:
+        pdf_filename = f"{output_dir}/alignai_scan_{timestamp}.pdf"
+
+    doc = SimpleDocTemplate(pdf_filename, page_size=letter)
+
+    date_line = Paragraph(f"Scan Date: {datetime.now().strftime('%B %d, %Y at %I:%M %p')}", styles['Normal'])
+    elements.append(date_line)
+    elements.append(Spacer(1, 0.2*inch))
+
+    overall_score = assessment_results['overall_score']
+    elements.append(Paragraph(f"Overall Scan Score : {overall_score:.1f}%", styles['Heading1']))
+
+    # interpretation
+    if overall_score >= 90:
+        interpretation = "Excellent movement quality and control."
+    elif overall_score >= 80:
+        interpretation = "Very good movement patterns with minor improvements possible."
+    elif overall_score >= 70:
+        interpretation = "Good movement with specific areas for improvement."
+    elif overall_score >= 60:
+        interpretation = "Moderate movement quality with clear opportunities for enhancement."
+    else:
+        interpretation = "Significant movement pattern deficiencies requiring attention."
+
+    elements.append(Paragraph(f"Interpretation: {interpretation}", styles['Normal']))
+    elements.append(Spacer(1, 0.2*inch))
+
+    # creation d'une chart bar pour les scores
+    drawing = Drawing(400, 200)
+    data = [[
+        assessment_results['balance_score'],
+        assessment_results['stepping_score'],
+        assessment_results['squat_score'],
+        assessment_results['posture_score']
+    ]]
+
+    chart = VerticalBarChart()
+    chart.x = 50
+    chart.y = 50
+    chart.height = 125
+    chart.width = 300
+    chart.data = data
+    chart.strokeColor = colors.black
+    chart.valueAxis.valueMin = 0
+    chart.valueAxis.valueMax = 100
+    chart.valueAxis.valueStep = 10
+    chart.categoryAxis.labels.boxAnchor = 'ne'
+    chart.categoryAxis.labels.dx = 8
+    chart.categoryAxis.labels.dy = -2
+    chart.categoryAxis.labels.angle = 30
+    chart.categoryAxis.categoryNames = ['Balance', 'Stepping', 'Squat', 'Posture']
+    chart.bars[(0, 0)].fillColor = colors.lightblue
+    chart.bars[(0, 1)].fillColor = colors.green
+    chart.bars[(0, 2)].fillColor = colors.orange
+    chart.bars[(0, 3)].fillColor = colors.lavender
+
+    drawing.add(chart)
+    elements.append(drawing)
+    elements.append(Spacer(1, 0.2*inch))
+
+    # sections des scores individuels
+    elements.append(Paragraph("Balance Scan", styles['Heading2']))
+    elements.append(Paragraph(f"Score: {assessment_results['balance_score']:.1f}%", styles['Normal']))
+    elements.append(Paragraph("The balance score measures stability during both static and dynamic movements. ", styles['Normal']))
+    elements.append(Spacer(1, 0.1*inch))
+    
+    # Stepping Score
+    elements.append(Paragraph("Stepping Scan", styles['Heading2']))
+    elements.append(Paragraph(f"Score: {assessment_results['stepping_score']:.1f}%", styles['Normal']))
+    elements.append(Paragraph("The stepping score evaluates coordination, rhythm, and control during stepping motions. ", styles['Normal']))
+    elements.append(Spacer(1, 0.1*inch))
+    
+    # Squat Score
+    elements.append(Paragraph("Squat Scan", styles['Heading2']))
+    elements.append(Paragraph(f"Score: {assessment_results['squat_score']:.1f}%", styles['Normal']))
+    elements.append(Paragraph("The squat score analyzes hip and knee mobility, core stability, and lower body strength. ", styles['Normal']))
+    elements.append(Spacer(1, 0.1*inch))
+    
+    # Posture Score
+    elements.append(Paragraph("Posture Scan", styles['Heading2']))
+    elements.append(Paragraph(f"Score: {assessment_results['posture_score']:.1f}%", styles['Normal']))
+    elements.append(Paragraph("The posture score evaluates spine alignment and overall body position. ", styles['Normal']))
+    elements.append(Spacer(1, 0.2*inch))
+
+    elements.append(Paragraph("Recommendations", styles['Heading1']))
+
+
+    # recommandations basé sur les scores
+    recommendations = []
+    if assessment_results['balance_score'] < 70:
+        recommendations.append("Focus on balance exercises such as single-leg stands and stability training.")
+    
+    if assessment_results['stepping_score'] < 70:
+        recommendations.append("Practice stepping patterns with attention to rhythm and control.")
+    
+    if assessment_results['squat_score'] < 70:
+        recommendations.append("Work on squat technique with emphasis on proper form and alignment.")
+    
+    if assessment_results['posture_score'] < 70:
+        recommendations.append("Incorporate posture exercises and awareness throughout the day.")
+    
+    if not recommendations:
+        recommendations.append("Maintain current exercise program and continue monitoring movement quality.")
+    
+    for recommendation in recommendations:
+        elements.append(Paragraph(f"• {recommendation}", styles['Normal']))
+
+    # on cree le document 
+    doc.build(elements)
+
+    print(f"Scan report saved to : {pdf_filename}")
+    return pdf_filename
+
+# Helper function to save scan to database
+def save_scan_to_db(client_id, scan_reason, assessment_results, pdf_path):
+    from domain.models import db
+    from domain.entities import Scan
+    
+    print(f"Saving scan to database for client {client_id}...")
+    # Create new scan record
+    new_scan = Scan(
+        client_id=client_id,
+        scan_reason=scan_reason,
+        balance_score=assessment_results['balance_score'],
+        stepping_score=assessment_results['stepping_score'],
+        squat_score=assessment_results['squat_score'],
+        posture_score=assessment_results['posture_score'],
+        overall_score=assessment_results['overall_score'],
+        report_pdf=pdf_path
+    )
+    
+    # Add to database
+    db.session.add(new_scan)
+    db.session.commit()
+    print(f"Scan saved to database with ID: {new_scan.id}")
+    assessment_results['scan_id'] = new_scan.id
 
 if __name__ == "__main__":
-    results = run_assessment()
-    print(json.dumps(results, indent=4))
+    import sys
+    import json
+    import os
+    import time
+    import cv2
+    import mediapipe as mp
+    import numpy as np
+    import traceback
+    from datetime import datetime
+    
+    # Default values
+    client_id = None
+    scan_reason = "Consult"
+    
+    # Process command line arguments
+    if len(sys.argv) > 1:
+        try:
+            print(f"Received argument: {sys.argv[1]}")
+            args = json.loads(sys.argv[1])
+
+            if 'client_id' in args:
+                client_id = int(args.get('client_id'))
+            else:
+                client_id = None
+
+            scan_reason = args.get('scan_reason', scan_reason)
+            print(f"Running assessment for client ID: {client_id}")
+            print(f"Scan reason: {scan_reason}")
+        except Exception as e:
+            print(f"Error parsing arguments for launching the scan: {str(e)}")
+
+    assessment_results = run_assessment()
+
+    try:
+        print("Scan completed, generating PDF...")
+        pdf_path = generate_scan_pdf(assessment_results, client_id=client_id, scan_reason=scan_reason)
+        assessment_results['report_pdf'] = pdf_path
+        print(f"Scan report saved to: {pdf_path}")
+
+        # Only attempt database operations if client_id is provided
+        if client_id:
+            try:
+                # Add parent directory to path to find app module
+                parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+                sys.path.append(parent_dir)
+                
+                try:
+                    # Use existing Flask app context if already in one
+                    from flask import current_app
+                    
+                    # Try to get current app context
+                    try:
+                        # If we're already within a Flask app context, use it
+                        with current_app.app_context():
+                            from domain.models import db
+                            from domain.entities import Scan
+                            
+                            print(f"Using existing Flask app context")
+                            save_scan_to_db(client_id, scan_reason, assessment_results, pdf_path)
+                    except RuntimeError:
+                        # No current app context, create a new one
+                        from app import create_app
+                        from domain.models import db
+                        from domain.entities import Scan
+                        
+                        print(f"Creating new Flask app context")
+                        app = create_app()
+                        with app.app_context():
+                            save_scan_to_db(client_id, scan_reason, assessment_results, pdf_path)
+                except ImportError as e:
+                    print(f"Warning: Flask app modules not available: {str(e)}")
+                    print("Skipping database save.")
+            except Exception as e:
+                print(f"Error during database operations: {str(e)}")
+                traceback.print_exc()
+    except Exception as e:
+        print(f"Error generating PDF report: {str(e)}")
+        traceback.print_exc()
+        
+    print(json.dumps(assessment_results, indent=4))

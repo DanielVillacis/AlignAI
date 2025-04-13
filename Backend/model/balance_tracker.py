@@ -39,5 +39,5 @@ class BalanceTracker:
         y_variance = np.var(hip_y_positions)
         
         # Convertion of the variance to a score (0-100%)
-        balance_score = 100 - min(100, (x_variance + y_variance) * 300)
+        balance_score = 100 - min(100, (x_variance + y_variance) * 500)
         return max(0, balance_score)
