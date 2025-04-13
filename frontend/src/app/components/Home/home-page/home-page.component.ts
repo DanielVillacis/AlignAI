@@ -124,7 +124,7 @@ export class HomePageComponent implements OnInit {
         // Ensure date is in correct format
         if (this.selectedDate) {
           const timeZoneOffset = new Date().getTimezoneOffset();
-          const dateWithOffset = new Date(this.selectedDate.getTime() - timeZoneOffset * 60000);
+          const dateWithOffset = new Date(this.selectedDate.getTime() + timeZoneOffset * 60000);
           eventData.event_date = this.formatDateForApi(dateWithOffset) + 'T' + 
                               (eventData.event_time || '09:00:00') + 'Z';
         }

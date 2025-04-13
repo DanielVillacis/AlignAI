@@ -74,11 +74,74 @@ export class ScanPageComponent implements OnInit {
         this.isSubmitting = false;
         this.snackBar.open('Scan launched successfully', 'Close', { duration: 5000 });
         console.log('Scan launched successfully', data);
+
+        this.pollScanStatus(clientId);
       },
       error: (error) => {
         this.isSubmitting = false;
         this.snackBar.open('Error launching scan', 'Close', { duration: 5000 });
         console.error('Error launching scan', error);
+      }
+    });
+  }
+
+  pollScanStatus(clientId: number): void {
+    const pollingInterval = 5000; // Poll every 5 seconds
+    const maxAttempts = 60; // Try for 5 minutes max
+    let attempts = 0;
+    
+    const pollTimer = setInterval(() => {
+      attempts++;
+      this.scanService.checkLatestScanStatus(clientId).subscribe({
+        next: (response) => {
+          if (response.status === 'complete') {
+            // Scan is complete, stop polling and download report
+            clearInterval(pollTimer);
+
+            setTimeout(() => {
+              this.downloadReport(response.scan_id);
+            }, 1500); // 1.5 second delay
+
+          } else if (attempts >= maxAttempts) {
+            // Stop polling after max attempts
+            clearInterval(pollTimer);
+            this.snackBar.open('Scan is taking longer than expected. Check results later.', 'Close', 
+              { duration: 8000 });
+          }
+        },
+        error: () => {
+          if (attempts >= maxAttempts) {
+            clearInterval(pollTimer);
+          }
+        }
+      });
+    }, pollingInterval);
+  }
+
+  downloadReport(scanId: number): void {
+    this.scanService.downloadScanReport(scanId).subscribe({
+      next: (blob: Blob) => {
+        // Create a URL for the blob
+        const url = window.URL.createObjectURL(blob);
+        
+        // Create a link element and trigger download
+        const a = document.createElement('a');
+        a.href = url;
+
+        a.download = `client_${this.selectedClient?.id}_scan_report.pdf`;
+
+        document.body.appendChild(a);
+        a.click();
+        
+        // Clean up
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+        
+        this.snackBar.open('Scan report downloaded successfully', 'Close', { duration: 5000 });
+      },
+      error: (error) => {
+        console.error('Error downloading scan report', error);
+        this.snackBar.open('Error downloading scan report', 'Close', { duration: 5000 });
       }
     });
   }

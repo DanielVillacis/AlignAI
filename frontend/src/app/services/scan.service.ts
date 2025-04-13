@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpErrorResponse} from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
 import { environment } from '../../environments/environment.local';
+import { catchError, map } from 'rxjs/operators';
+
 
 @Injectable({
   providedIn: 'root'
@@ -25,5 +27,36 @@ export class ScanService {
 
   getScanById(id: number): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/scans/${id}`);
+  }
+
+  checkLatestScanStatus(clientId: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/scans/status/${clientId}/latest`);
+  }
+
+  downloadScanReport(scanId: number): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/scans/download-report/${scanId}`, {
+      responseType: 'blob',
+      observe: 'response'  // This allows us to check response headers
+    }).pipe(
+      map(response => {
+        // Check if we got a PDF response (application/pdf)
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/pdf')) {
+          return response.body as Blob;
+        } else {
+          // Handle case where server returns error (might be JSON)
+          throw new Error('Invalid response type, expected PDF');
+        }
+      }),
+      catchError((error: unknown) => {
+        console.error('PDF download error:', error);
+        // Convert error to readable format
+        if (error instanceof HttpErrorResponse) {
+          // Using throwError instead of returning a promise
+          return throwError(() => new Error(error.message || 'Error downloading report'));
+        }
+        return throwError(() => new Error('Error downloading report'));
+      })
+    );
   }
 } 
