@@ -18,13 +18,12 @@
 
 .grid-container {
   display: grid;
-  grid-template-rows: 1fr 1fr; // Two equal rows
-  grid-template-columns: 1fr; // One column
+  grid-template-rows: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 20px;
   height: 100%;
 }
 
-// Top row sections
 .overview-section,
 .schedule-section {
   background: var(--card-background);
@@ -32,7 +31,6 @@
   padding: 20px;
 }
 
-// Make top row split into two columns
 .grid-container {
   grid-template-areas:
     "overview schedule"
@@ -63,8 +61,8 @@
 }
 
 .client-list {
-  max-height: 400px;  // Adjust this value as needed
-  overflow: hidden;  // Hide overflow on the container
+  max-height: 400px;  
+  overflow: hidden;
   
   table {
     width: 100%;
@@ -88,7 +86,7 @@
   tbody {
     display: block;
     overflow-y: auto;
-    height: 32.5vh;  // Should be less than client-list max-height
+    height: 32.5vh;
     
     tr {
       display: table;
@@ -102,7 +100,7 @@
       font-weight: lighter;
       color: var(--text-primary);
 
-      &:nth-child(5) { // targets the reason column (5th column)
+      &:nth-child(5) {
         > span {
           display: inline-block;
           background-color: #b8f29795;
@@ -113,7 +111,7 @@
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
-          max-width: 75px; // adjust as needed
+          max-width: 75px;
         }
       }
 
@@ -286,7 +284,6 @@ td {
   }
 }
 
-// Events list container
 .events-list {
   max-height: calc(100% - 60px);
   overflow-y: auto;
@@ -308,7 +305,7 @@ td {
 
 .event-card {
   position: relative;
-  padding: 10px 30px 10px 12px; // Add right padding to make room for delete button
+  padding: 10px 30px 10px 12px; 
 
   
   .event-main {
@@ -353,12 +350,12 @@ td {
     .event-time {
       color: var(--text-secondary);
       font-size: 0.85rem;
-      margin-left: auto; // Push to the right
+      margin-left: auto; 
     }
   }
   
   .delete-btn {
-    position: absolute; // Position it absolutely within the card
+    position: absolute; 
     top: 8px;
     right: 8px;
     background-color: var(--hover-color);
@@ -373,9 +370,9 @@ td {
     justify-content: center;
     border-radius: 50%;
     cursor: pointer;
-    opacity: 0; // Start hidden
+    opacity: 0; 
     transition: all 0.2s ease;
-    z-index: 10; // Ensure it's above everything else
+    z-index: 10; 
     
     &:hover {
       background-color: #ff3b30;
@@ -385,7 +382,7 @@ td {
   
   &:hover {
     .delete-btn {
-      opacity: 1 !important; // Force visibility on hover with !important
+      opacity: 1 !important;
     }
   }
 }

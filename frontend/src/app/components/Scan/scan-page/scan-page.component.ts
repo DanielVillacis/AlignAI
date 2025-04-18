@@ -34,7 +34,7 @@ export class ScanPageComponent implements OnInit {
   ngOnInit(): void {
     this.loadClients();
     
-    // Watch for changes in the client selection
+    // watch for changes in the client selection
     this.scanForm.get('clientId')?.valueChanges.subscribe(clientId => {
       if (clientId) {
         this.updateSelectedClient(clientId);
@@ -86,8 +86,8 @@ export class ScanPageComponent implements OnInit {
   }
 
   pollScanStatus(clientId: number): void {
-    const pollingInterval = 5000; // Poll every 5 seconds
-    const maxAttempts = 60; // Try for 5 minutes max
+    const pollingInterval = 5000; // we poll every 5 seconds (race condition from the whole system)
+    const maxAttempts = 60; // try for 5 minutes max
     let attempts = 0;
     
     const pollTimer = setInterval(() => {
@@ -95,7 +95,7 @@ export class ScanPageComponent implements OnInit {
       this.scanService.checkLatestScanStatus(clientId).subscribe({
         next: (response) => {
           if (response.status === 'complete') {
-            // Scan is complete, stop polling and download report
+            // scan is complete, stop polling and download report
             clearInterval(pollTimer);
 
             setTimeout(() => {
@@ -103,7 +103,7 @@ export class ScanPageComponent implements OnInit {
             }, 1500); // 1.5 second delay
 
           } else if (attempts >= maxAttempts) {
-            // Stop polling after max attempts
+            // stop polling after max attempts
             clearInterval(pollTimer);
             this.snackBar.open('Scan is taking longer than expected. Check results later.', 'Close', 
               { duration: 8000 });
@@ -121,10 +121,9 @@ export class ScanPageComponent implements OnInit {
   downloadReport(scanId: number): void {
     this.scanService.downloadScanReport(scanId).subscribe({
       next: (blob: Blob) => {
-        // Create a URL for the blob
         const url = window.URL.createObjectURL(blob);
         
-        // Create a link element and trigger download
+        // create a link element and trigger download
         const a = document.createElement('a');
         a.href = url;
 
@@ -133,7 +132,7 @@ export class ScanPageComponent implements OnInit {
         document.body.appendChild(a);
         a.click();
         
-        // Clean up
+        // clean up
         window.URL.revokeObjectURL(url);
         document.body.removeChild(a);
         

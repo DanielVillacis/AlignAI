@@ -30,8 +30,8 @@ export class AuthService {
         const tokenExpiry = localStorage.getItem('tokenExpiry');
 
         if (userData && token && refreshToken) {
-            const user = JSON.parse(userData); // Parse the user data
-            this.userSubject.next(user); // Emit the user data
+            const user = JSON.parse(userData); // parse the user data
+            this.userSubject.next(user); // emit the user data
 
             // set token expiry timer
             if (tokenExpiry) {
@@ -85,11 +85,11 @@ export class AuthService {
             if (response && response.access_token) {
               localStorage.setItem('token', response.access_token);
               
-              // Set token expiry time (1 hour from now)
+              // set token expiry time (1 hour from now)
               const expiryDate = new Date(Date.now() + 3600 * 1000).toISOString();
               localStorage.setItem('tokenExpiry', expiryDate);
               
-              // Set new timer
+              // set new timer
               this.setTokenExpiry(3600 * 1000);
             }
           }),
@@ -123,30 +123,30 @@ export class AuthService {
 
     private handleAuthResponse(response: any): void {
         if (response && response.user && response.access_token && response.refresh_token) {
-          // Store user details and tokens
+          // store user details and tokens
           localStorage.setItem('user', JSON.stringify(response.user));
           localStorage.setItem('token', response.access_token);
           localStorage.setItem('refreshToken', response.refresh_token);
           
-          // Set token expiry time (1 hour from now)
+          // set token expiry time (1 hour from now)
           const expiryDate = new Date(Date.now() + 3600 * 1000).toISOString();
           localStorage.setItem('tokenExpiry', expiryDate);
           
-          // Update user subject
+          // update user subject
           this.userSubject.next(response.user);
           
-          // Set token expiry timer
+          // set token expiry timer
           this.setTokenExpiry(3600 * 1000);
         }
     }
 
     private setTokenExpiry(expiresIn: number): void {
-        // Clear any existing timer
+        // clear any existing timer
         if (this.tokenExpiryTimer) {
             clearTimeout(this.tokenExpiryTimer);
         }
         
-        // Set new timer to refresh token 5 minutes before expiry
+        // set new timer to refresh token 5 minutes before expiry
         const refreshTime = expiresIn - (5 * 60 * 1000);
         if (refreshTime > 0) {
             this.tokenExpiryTimer = setTimeout(() => {

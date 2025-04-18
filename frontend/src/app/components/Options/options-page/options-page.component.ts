@@ -13,7 +13,7 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   imports: [ThemeToggleComponent, 
     CommonModule,
-    FormsModule,  // Add FormsModule for ngModel
+    FormsModule,  
     MatSlideToggleModule,
     MatSelectModule,
     MatButtonModule,
@@ -29,19 +29,19 @@ export class OptionsPageComponent {
   selectedLanguage = 'English';
 
   updateProfile() {
-    // Navigate to the profile update page or open a dialog
+    // rien pour l'instant
   }
   
   changePassword() {
-    // Navigate to the change password page or open a dialog
+    
   }
 
   exportData() {
-    // Trigger data export logic
+    
   }
 
   resetToDefaults() {
-    // Reset all settings to their default values
+    // reset all settings to their default values
     this.emailNotifications = true;
     this.pushNotifications = false;
     this.selectedLanguage = 'English';

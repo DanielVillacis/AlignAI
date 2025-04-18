@@ -18,12 +18,12 @@ export class AuthInterceptor implements HttpInterceptor {
   constructor(private authService: AuthService) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // Don't add token to auth endpoints
+    // don't add token to auth endpoints
     if (request.url.includes('/auth/') && !request.url.includes('/refresh-token')) {
       return next.handle(request);
     }
     
-    // Add auth token to request
+    // add auth token to request
     const token = this.authService.getToken();
     if (token) {
       request = this.addToken(request, token);

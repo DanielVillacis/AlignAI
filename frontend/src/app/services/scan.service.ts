@@ -36,23 +36,23 @@ export class ScanService {
   downloadScanReport(scanId: number): Observable<Blob> {
     return this.http.get(`${this.apiUrl}/scans/download-report/${scanId}`, {
       responseType: 'blob',
-      observe: 'response'  // This allows us to check response headers
+      observe: 'response' 
     }).pipe(
       map(response => {
-        // Check if we got a PDF response (application/pdf)
+        // check if we got a PDF response (application/pdf)
         const contentType = response.headers.get('content-type');
         if (contentType && contentType.includes('application/pdf')) {
           return response.body as Blob;
         } else {
-          // Handle case where server returns error (might be JSON)
+          // handle case where server returns error (might be JSON)
           throw new Error('Invalid response type, expected PDF');
         }
       }),
       catchError((error: unknown) => {
         console.error('PDF download error:', error);
-        // Convert error to readable format
+        // convert error to readable format
         if (error instanceof HttpErrorResponse) {
-          // Using throwError instead of returning a promise
+          // using throwError instead of returning a promise
           return throwError(() => new Error(error.message || 'Error downloading report'));
         }
         return throwError(() => new Error('Error downloading report'));

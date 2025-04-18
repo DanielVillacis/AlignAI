@@ -51,9 +51,9 @@ export class LoginComponent implements OnInit, AfterViewInit {
   faGoogle = faGoogle;
   faApple = faApple;
 
-  private googleClientId = environment.googleClientId; // Replace with your Google client ID fromt environment.ts
-  private appleClientId = environment.appleClientId; // Replace with your Apple client ID from environment.ts
-  private appleRedirectUri = environment.appleRedirectUri; // Replace with your Apple redirect URI from environment.ts
+  private googleClientId = environment.googleClientId; 
+  private appleClientId = environment.appleClientId; 
+  private appleRedirectUri = environment.appleRedirectUri;
 
   constructor(
     private fb: FormBuilder,
@@ -67,7 +67,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
 
-    // Meta tag for sing-in
     this.meta.addTag({
       name: 'appleid-signin-client-id',
       content: this.appleClientId
@@ -87,7 +86,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    // If user is already logged in, redirect to home page
+    // if user is already logged in, redirect to home page
     if (this.authService.isAuthenticated()) {
       this.router.navigate(['/']);
     }
@@ -112,7 +111,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
         { theme: "outline", size: "large", width: '100%' }
       );
     } else {
-      // If Google library isn't loaded yet, try again after a short delay
       setTimeout(() => this.initGoogleSignIn(), 100);
     }
   }
@@ -130,18 +128,17 @@ export class LoginComponent implements OnInit, AfterViewInit {
         console.error('Error initializing Apple Sign-In:', error);
       }
     } else {
-      // If Apple library isn't loaded yet, try again after a short delay
       setTimeout(() => this.initAppleSignIn(), 100);
     }
   }
 
   private handleGoogleSignIn(response: any): void {
-    // Extract the ID token
+    // extract the ID token
     const idToken = response.credential;
     
     this.isLoading = true;
     
-    // Call your service method
+    // call service method
     this.authService.googleLogin(idToken).subscribe({
       next: () => {
         this.router.navigate(['/']);

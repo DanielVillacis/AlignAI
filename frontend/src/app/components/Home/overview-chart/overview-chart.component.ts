@@ -14,7 +14,7 @@ import {
 } from 'ng-apexcharts';
 import { ThemeService } from '../../../services/theme.service';
 
-// Define chart options type
+
 export type ChartOptions = {
   series: ApexAxisChartSeries;
   chart: ApexChart;
@@ -108,12 +108,12 @@ export class OverviewChartComponent implements OnInit {
     borderColor: 'transparent',
     xaxis: {
       lines: {
-        show: false // Hide vertical grid lines
+        show: false 
       }
     },
     yaxis: {
       lines: {
-        show: false // Hide horizontal grid lines
+        show: false 
       }
     },
     padding: {
@@ -148,7 +148,7 @@ export class OverviewChartComponent implements OnInit {
   }
 
   generateChartData() {
-    // Sample data for the chart
+    // sample data for the chart
     this.series = [
       {
         name: 'New Patients',

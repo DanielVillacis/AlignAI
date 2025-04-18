@@ -43,7 +43,6 @@ export class CreateEventFormComponent {
       is_scan: [false]
     });
 
-    // If there's existing event data, populate the form
     if (data.event) {
       this.eventForm.patchValue(data.event);
     }

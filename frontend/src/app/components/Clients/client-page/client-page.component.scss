@@ -11,7 +11,7 @@
     margin-left: 220px;
     padding: 20px;
     text-align: center;
-    animation: fadeIn 1s ease-in-out; // apply fade-in to whole component
+    animation: fadeIn 1s ease-in-out;
 }
 
 .clients-section {
@@ -24,8 +24,8 @@
 
 
 .client-list {
-    height: 600px;  // Adjust this value as needed
-    overflow: hidden;  // Hide overflow on the container
+    height: 600px; 
+    overflow: hidden;
     
     table {
       width: 100%;
@@ -47,7 +47,7 @@
     tbody {
       display: block;
       overflow-y: auto;
-      height: 53vh;  // Should be less than client-list max-height
+      height: 53vh; 
       
       tr {
         display: table;
@@ -60,7 +60,7 @@
         text-align: left;
         font-weight: lighter;
   
-        &:nth-child(7) { // targets the reason column (5th column)
+        &:nth-child(7) {
           > span {
             display: inline-block;
             background-color: #b8f29795;
@@ -70,7 +70,7 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 75px; // adjust as needed
+            max-width: 75px;
           }
         }
   

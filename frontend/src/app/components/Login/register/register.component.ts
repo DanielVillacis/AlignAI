@@ -79,11 +79,9 @@ export class RegisterComponent {
   }
 
   googleLogin(): void {
-    // Implement Google Sign-Up
   }
 
   appleLogin(): void {
-    // Implement Apple Sign-Up
   }
 
   goToLogin(): void {

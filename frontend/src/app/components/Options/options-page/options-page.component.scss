@@ -16,6 +16,7 @@
     min-height: 100vh;
     padding: 2rem;
     animation: fadeIn 1s ease-in-out;
+    // margin-top: 110px;
 
     h1 {
       font-size: 2rem;
@@ -24,8 +25,8 @@
     }
   
     .options-section {
-        width: 100%; // Ensure the section spans the available width
-        max-width: 600px; // Limit the width for better readability
+        width: 100%; 
+        max-width: 600px; 
         margin-bottom: 2rem;
   
       h2 {

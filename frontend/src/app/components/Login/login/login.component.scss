@@ -110,15 +110,14 @@
 
     .social-buttons {
       display: flex;
-      gap: 1rem; // Space between the buttons
+      gap: 1rem; 
       justify-content: center;
-      // display the buttons in a column;
       flex-direction: column;
       width: 90%;
 
       #google-signin-button {
         flex: 1;
-        min-height: 36px; // Ensure button has height
+        min-height: 36px; 
         border-radius: 20px;
       }
       

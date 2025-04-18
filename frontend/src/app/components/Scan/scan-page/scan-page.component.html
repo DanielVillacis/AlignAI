@@ -4,7 +4,6 @@
     
     <div class="scan-form-container">
       <form [formGroup]="scanForm">
-        <!-- Client Selection -->
         <div class="form-group">
           <label for="client">Select Patient</label>
           <select id="client" formControlName="clientId" class="form-control">
@@ -18,7 +17,6 @@
           </div>
         </div>
         
-        <!-- Scan Reason -->
         <div class="form-group">
           <label for="reason">Reason for Scan</label>
           <textarea id="reason" formControlName="scanReason" class="form-control" rows="3" 
@@ -28,7 +26,6 @@
           </div>
         </div>
         
-        <!-- Submit Button -->
         <div class="buttons-container">
           <button type="submit" class="button-28" 
                  [disabled]="scanForm.invalid || isSubmitting"
@@ -40,7 +37,7 @@
       </form>
     </div>
     
-    <!-- Selected Client Info (shows when a client is selected) -->
+    <!-- selected Client Info -->
     <div class="client-preview" *ngIf="selectedClient">
       <h3>Patient Information</h3>
       <div class="client-details">

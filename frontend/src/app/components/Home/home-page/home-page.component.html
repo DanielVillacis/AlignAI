@@ -1,6 +1,5 @@
 <div class="content">
   <div class="grid-container">
-    <!-- Top row with two sections -->
     <div class="overview-section">
       <h1 class="section-title">Overview</h1>
       <div class="overview-content">
@@ -12,13 +11,11 @@
       <h1 class="section-title">Schedule</h1>
       <div class="schedule-content">
         <div class="calendar-container">
-          <!-- Calendar on the left -->
           <mat-calendar 
             class="schedule-calendar"
             (selectedChange)="onDateSelected($event)">
           </mat-calendar>
           
-          <!-- Events display on the right -->
           <div class="schedule-details">
             <div class="event-header">
               <h2 *ngIf="selectedDate">
@@ -29,7 +26,6 @@
               </button>
             </div>
             
-            <!-- Events list -->
             <div class="events-list">
               <div *ngFor="let event of scheduledEvents" class="event-card">
                 <button class="delete-btn" (click)="deleteEvent(event.id)" title="Delete event">×</button>
@@ -56,7 +52,6 @@
       </div>
     </div>
 
-    <!-- Bottom section with recent scans -->
     <div class="scans-section">
       <h1 class="section-title">Recent Scans</h1>
       <div class="client-list" *ngIf="scans.length; else noScans">

@@ -27,7 +27,7 @@ import { ScanService } from '../../../services/scan.service';
   styleUrls: ['./home-page.component.scss'],
 })
 export class HomePageComponent implements OnInit {
-  selectedDate: Date | null = null;
+  selectedDate: Date = new Date();
   scheduledEvents: any[] = [];
   scans: any[] = [];
   isLoading: boolean = false;
@@ -42,7 +42,7 @@ export class HomePageComponent implements OnInit {
     private eventService: EventService,
     private scanService: ScanService
   ) {
-    // Initialize form
+
     this.eventForm = this.fb.group({
       title: ['', Validators.required],
       description: [''],
@@ -55,13 +55,13 @@ export class HomePageComponent implements OnInit {
   ngOnInit(): void {
     this.getScans();
     this.getClients();
+    this.getEventsForDate(this.selectedDate);
   }
 
   onDateSelected(date: Date) {
     this.selectedDate = date;
     this.getEventsForDate(date);
   
-    // Update form with selected date
     if (this.eventForm) {
       this.eventForm.patchValue({
         event_date: this.formatDateForApi(date)
@@ -98,7 +98,7 @@ export class HomePageComponent implements OnInit {
       });
   }
 
-  // Helper to format date for API
+  // helper to format date for API
   formatDateForApi(date: Date): string {
     const year = date.getFullYear();
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
@@ -118,10 +118,8 @@ export class HomePageComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        // Create event with the form data
         const eventData = { ...result };
         
-        // Ensure date is in correct format
         if (this.selectedDate) {
           const timeZoneOffset = new Date().getTimezoneOffset();
           const dateWithOffset = new Date(this.selectedDate.getTime() + timeZoneOffset * 60000);
@@ -147,7 +145,6 @@ export class HomePageComponent implements OnInit {
     if (this.eventForm.valid) {
       const eventData = this.eventForm.value;
       
-      // Ensure date is in correct format
       if (this.selectedDate) {
         eventData.event_date = this.formatDateForApi(this.selectedDate) + 'T' + 
                               (eventData.event_time || '09:00:00');
