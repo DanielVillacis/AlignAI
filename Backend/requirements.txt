@@ -1,6 +1,13 @@
 Flask
 flask-sqlalchemy
+flask-migrate
 flask-cors
+flask-jwt-extended
 mediapipe
 opencv-python
 numpy
+reportlab
+alembic
+SQLAlchemy
+PyJWT
+Werkzeug

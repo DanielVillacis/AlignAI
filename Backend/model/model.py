@@ -31,17 +31,12 @@ def add_modern_text(
         with_background=True
     ):
 
-    # Use absolute path to font file
     if font_path is None:
-        # Get the directory of the current script
         script_dir = os.path.dirname(os.path.abspath(__file__))
-        # Construct absolute path to font file
         font_path = os.path.join(script_dir, "..", "fonts", "Nunito-Bold.ttf")
 
-    # Check if font file exists
     if not os.path.isfile(font_path):
         print(f"Warning: Font file not found at {font_path}, using default font")
-        # Use a default font that's guaranteed to be available
         font = ImageFont.load_default()
     else:
         try:
@@ -59,8 +54,7 @@ def add_modern_text(
     if not font:
         font = ImageFont.load_default()
     
-    # we get text dimensions
-    if hasattr(font, "getbbox"):
+    if hasattr(font, "getbbox"): # can be buggy 
         # for newer pillow versions (9.2.0+)
         bbox = font.getbbox(text)
         text_width = bbox[2] - bbox[0]
@@ -84,7 +78,6 @@ def add_modern_text(
             width=1
         )
     
-    # draw text
     draw.text(position, text, font=font, fill=text_color)
     
     # we convert back to openCV format
@@ -94,9 +87,7 @@ def add_modern_text(
 
 def draw_progress_bar(image, progress, position, width=200, height=20):
     x, y = position
-    # draw background
     cv2.rectangle(image, (x, y), (x + width, y + height), (70, 70, 70), -1)
-    # draw progress
     progress_width = int(width * progress / 100)
     cv2.rectangle(image, (x, y), (x + progress_width, y + height), (0, 184, 212), -1)
     return image
@@ -122,11 +113,11 @@ def run_assessment():
         "overall_score": 0
     }
 
-    # display dimensions
+    # display dimensions -> can be adjusted depending on the screen
     display_width = 1920
     display_height = 1080
 
-    # font sizes
+    # global font sizes
     FONT_TITLE = 34
     FONT_HEADING = 32
     FONT_SUBHEADING = 30
@@ -134,7 +125,7 @@ def run_assessment():
     FONT_SIDEBAR = 14
     
     
-    # setup mediapipe poselandmark model
+    # mediapipe poselandmark model
     mp_drawing = mp.solutions.drawing_utils
     mp_pose = mp.solutions.pose
     
@@ -156,7 +147,6 @@ def run_assessment():
                 print("Failed to grab frame")
                 break
 
-            # resize frame to fit the display
             frame = cv2.resize(frame, (display_width, display_height))
             
             current_time = time.time()
@@ -219,7 +209,7 @@ def run_assessment():
                                 print("No valid squat spine angles found, using default score")  
 
                         else:
-                            # Fallback if no spine angles recorded
+                            # default if no spine angles recorded
                             posture_score = 50
                             print("No spine angles recorded, using default score")    
 
@@ -230,7 +220,7 @@ def run_assessment():
                         assessment_results["overall_score"] = (
                             assessment_results["balance_score"] * 0.25 +
                             assessment_results["stepping_score"] * 0.25 +
-                            assessment_results["squat_score"] * 0.3 +   # plus haut pour les squats
+                            assessment_results["squat_score"] * 0.3 +   # bigger weight score for the squats
                             assessment_results["posture_score"] * 0.2
                         )
                         
@@ -240,7 +230,7 @@ def run_assessment():
                     state_start_time = current_time
                     instructions = "Perform 10 steps in place"
             
-            # draw skeleton first from mediapipe
+            # draw skeleton from mediapipe
             if results.pose_landmarks:
                 mp_drawing.draw_landmarks(
                     image, results.pose_landmarks, mp_pose.POSE_CONNECTIONS,
@@ -250,9 +240,9 @@ def run_assessment():
             
             # current scores will be displayed on the right side
             h, w = image.shape[:2]
-            sidebar_width = 300  # wider sidebar
+            sidebar_width = 300  # can be adjusted depending on the screen size and font size
             
-            # add title to sidebar with modern text
+            # sidebar title
             image = add_modern_text(
                 image, 
                 "AlignAI", 
@@ -406,7 +396,6 @@ def run_assessment():
                         )
                         y_position += 50
             
-            # display the image
             cv2.imshow(window_name, image)
             
             # check for exit ('q' for exiting the application)
@@ -417,7 +406,7 @@ def run_assessment():
         cap.release()
         cv2.destroyAllWindows()
 
-        # ajout du pdf
+        # create the pdf report
         if current_state == ExerciseState.COMPLETED:
             print("Scan completed, generating PDF...")
             try:
@@ -446,7 +435,7 @@ def generate_scan_pdf(assessment_results, client_id=None, scan_id=None, scan_rea
 
     os.makedirs(output_dir, exist_ok=True)
 
-    # Determine PDF filename based on scan_id or timestamp
+    # create the PDF filename based on scan_id or timestamp
     if scan_id:
         pdf_filename = os.path.join(output_dir, f"client_{client_id}_scan_{scan_id}.pdf")
         print(f"Generating PDF with scan ID: {scan_id} at path: {pdf_filename}")
@@ -457,13 +446,12 @@ def generate_scan_pdf(assessment_results, client_id=None, scan_id=None, scan_rea
 
     client_info_added = False
 
-    # Try to get client info if client_id is provided
+    # we try to get client info if client_id is provided
     if client_id is not None:
         try:
             sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
             from domain.entities import Client
             
-            # This needs to be in a Flask app context
             try:
                 from flask import current_app
                 try:
@@ -476,7 +464,7 @@ def generate_scan_pdf(assessment_results, client_id=None, scan_id=None, scan_rea
         except ImportError:
             print("Could not import Client model, skipping client info")
 
-    # Set up document styles
+    # set up document style
     styles = getSampleStyleSheet()
     styles['Title'].fontName = 'Helvetica-Bold'
     styles['Title'].fontSize = 24
@@ -497,11 +485,10 @@ def generate_scan_pdf(assessment_results, client_id=None, scan_id=None, scan_rea
 
     elements = []
 
-    # Add title
     title = Paragraph("AlignAI Body Mobility Report", styles['Title'])
     elements.append(title)
 
-    # Add client info if available
+    # we add the client info if it's available
     if client_info_added and 'client' in locals():
         elements.append(Paragraph(f"Patient: {client.first_name} {client.last_name}", styles['Heading2']))
         elements.append(Paragraph(f"Age: {client.age}", styles['Normal']))
@@ -511,19 +498,18 @@ def generate_scan_pdf(assessment_results, client_id=None, scan_id=None, scan_rea
             elements.append(Paragraph(f"Previous Conditions: {client.previous_conditions}", styles['Normal']))
         elements.append(Spacer(1, 0.2*inch))
 
-    # Create the document
     doc = SimpleDocTemplate(pdf_filename, pagesize=letter)
 
-    # Add scan date
+    # we add a scan date
     date_line = Paragraph(f"Scan Date: {datetime.now().strftime('%B %d, %Y at %I:%M %p')}", styles['Normal'])
     elements.append(date_line)
     elements.append(Spacer(1, 0.2*inch))
 
-    # Add overall score and interpretation
+    # add overall score
     overall_score = assessment_results['overall_score']
     elements.append(Paragraph(f"Overall Scan Score: {overall_score:.1f}%", styles['Heading1']))
 
-    # Add interpretation based on score
+    # add interpretations based on score -> this will be determined by the health professionals
     if overall_score >= 90:
         interpretation = "Excellent mobility. Your movement patterns are very good with minimal risk of injury."
     elif overall_score >= 80:
@@ -538,7 +524,7 @@ def generate_scan_pdf(assessment_results, client_id=None, scan_id=None, scan_rea
     elements.append(Paragraph(f"Interpretation: {interpretation}", styles['Normal']))
     elements.append(Spacer(1, 0.2*inch))
 
-    # Add bar chart for scores
+    # add bar chart for scores
     drawing = Drawing(400, 200)
     data = [[
         assessment_results['balance_score'],
@@ -571,7 +557,7 @@ def generate_scan_pdf(assessment_results, client_id=None, scan_id=None, scan_rea
     elements.append(drawing)
     elements.append(Spacer(1, 0.2*inch))
 
-    # Add detailed scores
+    # add detailed scores
     elements.append(Paragraph("Mobility Assessment Details", styles['Heading1']))
     
     elements.append(Paragraph(f"Balance Score: {assessment_results['balance_score']:.1f}%", styles['Heading2']))
@@ -588,10 +574,10 @@ def generate_scan_pdf(assessment_results, client_id=None, scan_id=None, scan_rea
     
     elements.append(Spacer(1, 0.2*inch))
 
-    # Add recommendations section
+    # add recommendations
     elements.append(Paragraph("Recommendations", styles['Heading1']))
 
-    # Generate recommendations based on scores
+    # recommendations based on scores -> this will be determined by the health professionals
     recommendations = []
     if assessment_results['balance_score'] < 70:
         recommendations.append("Balance Training: Consider exercises that challenge your stability, such as single-leg stands, heel-to-toe walking, or balance board activities.")
@@ -611,20 +597,18 @@ def generate_scan_pdf(assessment_results, client_id=None, scan_id=None, scan_rea
     for recommendation in recommendations:
         elements.append(Paragraph(f"• {recommendation}", styles['Normal']))
 
-    # Build the document
     doc.build(elements)
 
     print(f"Scan report saved to: {pdf_filename}")
     return pdf_filename
 
-# Helper function to save scan to database
+# helper function to save scan to database
 def save_scan_to_db(client_id, scan_reason, assessment_results, pdf_path):
     from domain.models import db
     from domain.entities import Scan
     import sys
     sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     
-    # Create scan record first to get ID
     new_scan = Scan(
         client_id=client_id,
         scan_reason=scan_reason,
@@ -635,17 +619,17 @@ def save_scan_to_db(client_id, scan_reason, assessment_results, pdf_path):
         overall_score=assessment_results["overall_score"]
     )
     db.session.add(new_scan)
-    db.session.commit()  # Commit to get scan ID
+    db.session.commit()
     
-    # Generate PDF with the actual scan ID
+    # generate the PDF with the actual scan ID
     pdf_path = generate_scan_pdf(
         assessment_results, 
         client_id=client_id, 
-        scan_id=new_scan.id,  # Use actual scan ID
+        scan_id=new_scan.id,
         scan_reason=scan_reason
     )
     
-    # Update scan with PDF path
+    # update the scan table with the PDF path
     new_scan.report_pdf = os.path.relpath(pdf_path, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     db.session.commit()
 
@@ -663,11 +647,10 @@ if __name__ == "__main__":
     import traceback
     from datetime import datetime
     
-    # Default values
     client_id = None
     scan_reason = "Consult"
     
-    # Process command line arguments
+    # process command line arguments when running the script through terminal
     if len(sys.argv) > 1:
         try:
             print(f"Received argument: {sys.argv[1]}")
@@ -687,7 +670,7 @@ if __name__ == "__main__":
     assessment_results = run_assessment()
     
     try:
-        # Create database record first to get the scan ID
+        # create database record first to get the scan ID
         if client_id:
             try:
                 parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -698,10 +681,8 @@ if __name__ == "__main__":
                     from domain.models import db
                     from domain.entities import Scan
                     
-                    # Create app context
                     app = create_app()
                     with app.app_context():
-                        # Create scan record WITHOUT pdf_path initially
                         new_scan = Scan(
                             client_id=client_id,
                             scan_reason=scan_reason,
@@ -714,12 +695,12 @@ if __name__ == "__main__":
                         db.session.add(new_scan)
                         db.session.commit()
                         
-                        # Now generate PDF with the actual scan ID
+                        # generate PDF with the actual scan ID
                         scan_id = new_scan.id
                         pdf_path = generate_scan_pdf(assessment_results, client_id=client_id, 
                                                    scan_id=scan_id, scan_reason=scan_reason)
                         
-                        # Update the scan record with the PDF path
+                        # update the scan table with the PDF path
                         new_scan.report_pdf = pdf_path
                         db.session.commit()
                         
@@ -731,7 +712,7 @@ if __name__ == "__main__":
                 print(f"Error during database operations: {e}")
                 traceback.print_exc()
         else:
-            # If no client_id, still generate PDF but don't save to DB
+            # if no client_id, still generate PDF but don't save to db and don't link to any client
             pdf_path = generate_scan_pdf(assessment_results, scan_reason=scan_reason)
             print(f"PDF saved to: {pdf_path} (not linked to any client)")
     except Exception as e:

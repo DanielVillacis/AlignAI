@@ -7,7 +7,6 @@ class SquatTracker:
         self.in_squat = False # flag to indicate if currently in a squat
         self.last_squat_time = 0
         
-        # store data for squats
         self.hip_positions = []
         self.knee_angles = [] 
         self.spine_angles = [] 
@@ -15,7 +14,7 @@ class SquatTracker:
             'left': [],
             'right': []
         }
-        self.arm_angles = []  # for arm stability tracking during squats
+        self.arm_angles = [] 
         self.squat_qualities = []
      
        

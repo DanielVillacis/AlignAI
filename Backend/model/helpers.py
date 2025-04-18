@@ -18,11 +18,9 @@ def calculate_angles(a, b, c):
 
 def calculate_spine_angle(landmarks, mp_pose):
     """ Calculates the spine angle based on shoulder, hip and knee positions """
-    # Get points for spine calculation
     shoulder = [landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].x, landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].y]
     hip = [landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].x, landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].y]
     knee = [landmarks[mp_pose.PoseLandmark.LEFT_KNEE.value].x, landmarks[mp_pose.PoseLandmark.LEFT_KNEE.value].y]
     
-    # Calculate angle between shoulder, hip and knee
     spine_angle = calculate_angles(shoulder, hip, knee)
     return spine_angle

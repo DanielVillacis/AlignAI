@@ -17,7 +17,6 @@ class AIService:
 
         def run_detached_process():
             try:
-                # Prepare arguments
                 if client_id:
                     args = {
                         "client_id": int(client_id),
@@ -25,7 +24,7 @@ class AIService:
                     }
                     args_json = json.dumps(args)
                     
-                    # Use nohup on macOS to keep process running after parent terminates
+                    # we use nohup on macOS to keep process running after parent terminates -> else we have a race condition
                     with open(log_file, 'a') as log:
                         log.write(f"\n--- Starting new scan at {datetime.datetime.now()} ---\n")
                         log.write(f"Client ID: {client_id}, Reason: {scan_reason}\n")
@@ -35,7 +34,7 @@ class AIService:
                         if sys.platform == 'darwin':  # macOS
                             cmd = f'nohup {python_exe} "{model_path}" \'{args_json}\' > "{log_file}" 2>&1 &'
                             os.system(cmd)
-                        else:  # Windows or other
+                        else:  # windows or other
                             # use subprocess from python
                             CREATE_NEW_PROCESS_GROUP = 0x00000200
                             DETACHED_PROCESS = 0x00000008
@@ -52,7 +51,7 @@ class AIService:
                 with open(log_file, 'a') as log:
                     log.write(f"Error starting scan process: {str(e)}\n")
 
-        # Run in a separate thread to avoid blocking the flask request
+        # run in a separate thread to avoid blocking the flask request
         thread = threading.Thread(target=run_detached_process)
         thread.daemon = False  # keep running even if main thread ends
         thread.start()

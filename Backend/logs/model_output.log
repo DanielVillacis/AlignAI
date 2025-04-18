@@ -1,45 +1,45 @@
 WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
-I0000 00:00:1744581137.172256 8040921 gl_context.cc:369] GL version: 2.1 (2.1 Metal - 89.3), renderer: Apple M2
+I0000 00:00:1744660557.540822 8991246 gl_context.cc:369] GL version: 2.1 (2.1 Metal - 89.3), renderer: Apple M2
 INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
-W0000 00:00:1744581137.247728 8041012 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
-2025-04-13 17:52:17.262 Python[59807:8040921] WARNING: AVCaptureDeviceTypeExternal is deprecated for Continuity Cameras. Please use AVCaptureDeviceTypeContinuityCamera and add NSCameraUseContinuityCameraDeviceType to your Info.plist.
-W0000 00:00:1744581137.264901 8041016 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
-2025-04-13 17:52:18.085 Python[59807:8040921] +[IMKClient subclass]: chose IMKClient_Modern
-2025-04-13 17:52:18.085 Python[59807:8040921] +[IMKInputSession subclass]: chose IMKInputSession_Modern
-W0000 00:00:1744581139.459066 8041015 landmark_projection_calculator.cc:186] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+2025-04-14 15:55:57.586 Python[58629:8991246] WARNING: AVCaptureDeviceTypeExternal is deprecated for Continuity Cameras. Please use AVCaptureDeviceTypeContinuityCamera and add NSCameraUseContinuityCameraDeviceType to your Info.plist.
+W0000 00:00:1744660557.590565 8991372 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1744660557.602138 8991375 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1744660557.733907 8991372 landmark_projection_calculator.cc:186] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+2025-04-14 15:55:58.119 Python[58629:8991246] +[IMKClient subclass]: chose IMKClient_Modern
+2025-04-14 15:55:58.119 Python[58629:8991246] +[IMKInputSession subclass]: chose IMKInputSession_Modern
 /Users/danielvillacis/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
   warnings.warn(
 /Users/danielvillacis/Developer/AlignAI/backend/model/model.py:470: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
   client = Client.query.get(client_id)
-Received argument: {"client_id": 2, "scan_reason": "N/A"}
-Running assessment for client ID: 2
-Scan reason: N/A
-Min Knee Angle: 124.08448368433359, Depth Score: 20
-Spine Angle: 58.12791304530981, Spine Score: 20
-Knee Position: -0.03171643614768982, Knee Position Score: 25
-Movement Smoothness: 4.252294231031961, Consistency Score: 7.243117306904118
-Min Knee Angle: 121.52448943769087, Depth Score: 20
-Spine Angle: 70.00491749967574, Spine Score: 25
-Knee Position: -0.044756144285202026, Knee Position Score: 25
-Movement Smoothness: 6.851633905648457, Consistency Score: 0
-Min Knee Angle: 121.52448943769087, Depth Score: 20
-Spine Angle: 70.00491749967574, Spine Score: 25
-Knee Position: -0.044756144285202026, Knee Position Score: 25
-Movement Smoothness: 7.700840056717454, Consistency Score: 0
-Average Spine Angle during squats: 82.0, Posture Score: 48.9%
+Received argument: {"client_id": 5, "scan_reason": "premier scan"}
+Running assessment for client ID: 5
+Scan reason: premier scan
+Min Knee Angle: 77.90090747599604, Depth Score: 30
+Spine Angle: 74.7653125459197, Spine Score: 25
+Knee Position: -0.09247460961341858, Knee Position Score: 25
+Movement Smoothness: 8.54426598422746, Consistency Score: 0
+Min Knee Angle: 81.19516876107976, Depth Score: 30
+Spine Angle: 75.04590754252598, Spine Score: 20
+Knee Position: -0.08993649482727051, Knee Position Score: 25
+Movement Smoothness: 9.862187051967855, Consistency Score: 0
+Min Knee Angle: 68.70563770280773, Depth Score: 30
+Spine Angle: 69.16174871770221, Spine Score: 25
+Knee Position: -0.08739578723907471, Knee Position Score: 25
+Movement Smoothness: 12.516967662464523, Consistency Score: 0
+Average Spine Angle during squats: 83.4, Posture Score: 44.7%
 Scan completed, generating PDF...
-Generating PDF with timestamp: 20250413_175244 at path: ../reports/client_None_scan_20250413_175244.pdf
-Scan report saved to: ../reports/client_None_scan_20250413_175244.pdf
-Scan report saved to: ../reports/client_None_scan_20250413_175244.pdf 
-Generating PDF with scan ID: 37 at path: ../reports/client_2_scan_37.pdf
-Scan report saved to: ../reports/client_2_scan_37.pdf
-Scan saved to database with ID: 37
-PDF saved to: ../reports/client_2_scan_37.pdf
+Generating PDF with timestamp: 20250414_155641 at path: ../reports/client_None_scan_20250414_155641.pdf
+Scan report saved to: ../reports/client_None_scan_20250414_155641.pdf
+Scan report saved to: ../reports/client_None_scan_20250414_155641.pdf 
+Generating PDF with scan ID: 51 at path: ../reports/client_5_scan_51.pdf
+Scan report saved to: ../reports/client_5_scan_51.pdf
+Scan saved to database with ID: 51
+PDF saved to: ../reports/client_5_scan_51.pdf
 {
-    "balance_score": 99.29928627063771,
-    "stepping_score": 91.92250001207711,
-    "squat_score": 70.74770576896803,
-    "posture_score": 48.85074779140683,
-    "overall_score": 78.79990785965049,
-    "report_pdf": "../reports/client_None_scan_20250413_175244.pdf"
+    "balance_score": 97.81351619401588,
+    "stepping_score": 94.97572486736942,
+    "squat_score": 78.33333333333333,
+    "posture_score": 44.72770515157471,
+    "overall_score": 80.64285129566126,
+    "report_pdf": "../reports/client_None_scan_20250414_155641.pdf"
 }

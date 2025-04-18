@@ -11,11 +11,9 @@ from werkzeug.security import generate_password_hash
 class AuthService:
     @staticmethod
     def register_user(data):
-        # Check if user already exists
         if User.query.filter_by(email=data['email']).first():
             return None, "Email already registered"
 
-        # Create new user
         new_user = User(
             email=data['email'],
             first_name=data.get('first_name', ''),
@@ -27,7 +25,6 @@ class AuthService:
         db.session.add(new_user)
         db.session.commit()
         
-        # Generate tokens
         access_token = AuthService.generate_token(new_user)
         refresh_token = AuthService.generate_refresh_token(new_user)
         
@@ -43,7 +40,6 @@ class AuthService:
         if not user or not user.check_password(password):
             return None, "Invalid credentials"
         
-        # Generate tokens
         access_token = AuthService.generate_token(user)
         refresh_token = AuthService.generate_refresh_token(user)
         
@@ -56,7 +52,7 @@ class AuthService:
     @staticmethod
     def google_auth(token):
         try:
-            # Validate Google token
+            # validate google token
             idinfo = id_token.verify_oauth2_token(
                 token, 
                 requests.Request(), 
@@ -67,7 +63,6 @@ class AuthService:
             user = User.query.filter_by(email=email).first()
             
             if not user:
-                # Create new user if it doesn't exist
                 user = User(
                     email=email,
                     first_name=idinfo.get('given_name', ''),
@@ -78,12 +73,10 @@ class AuthService:
                 db.session.add(user)
                 db.session.commit()
             elif user.provider != 'google':
-                # Update existing user provider if they used a different login method before
                 user.provider = 'google'
                 user.provider_id = idinfo['sub']
                 db.session.commit()
                 
-            # Generate tokens
             access_token = AuthService.generate_token(user)
             refresh_token = AuthService.generate_refresh_token(user)
             
@@ -98,8 +91,7 @@ class AuthService:
     
     @staticmethod
     def apple_auth(identity_token):
-        # Apple auth implementation
-        # Requires Apple's auth library and developer account
+        # Apple auth implementation -> requires apple dev account ($$$)
         # This is a placeholder
         pass
     

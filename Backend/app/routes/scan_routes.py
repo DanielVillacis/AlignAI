@@ -42,31 +42,30 @@ def download_report(id):
         if not scan.report_pdf:
             return jsonify({'error': 'No report available for this scan'}), 404
             
-        # Get the absolute path to the PDF
+        # get the absolute path to the PDF
         base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
         
-        # Try exact path stored in database
+        # we try exact path stored in database
         pdf_path = os.path.join(base_dir, scan.report_pdf.replace('../', ''))
         print(f"Looking for PDF at: {pdf_path}")
 
-        # Try all possible paths - including project root level
+        # try all possible paths - including project root level -> was added for pdf lookup bug
         possible_paths = [
-            # Inside backend directory
+            # inside backend directory
             pdf_path,
             os.path.join(base_dir, 'reports', f"client_{scan.client_id}_scan_{scan.id}.pdf"),
             
-            # At project root level (one level up from backend)
+            # at project root level
             os.path.join(os.path.dirname(base_dir), 'reports', f"client_{scan.client_id}_scan_{scan.id}.pdf")
         ]
         
-        # Try each path
         for path in possible_paths:
             print(f"Checking path: {path}")
             if os.path.exists(path):
                 pdf_path = path
                 print(f"Found PDF at: {pdf_path}")
                 
-                # Update database with correct relative path
+                # update database with correct relative path
                 project_root = os.path.dirname(base_dir)
                 rel_path = os.path.relpath(pdf_path, project_root)
                 scan.report_pdf = rel_path
@@ -74,11 +73,11 @@ def download_report(id):
                 db.session.commit()
                 break
         else:
-            # If no paths worked, try generic search for any client file
+            # if no paths worked, try generic search for any client file
             reports_dir_backend = os.path.join(base_dir, 'reports')
             reports_dir_root = os.path.join(os.path.dirname(base_dir), 'reports')
             
-            # Check both possible reports directories
+            # check both possible reports directories
             for reports_dir in [reports_dir_backend, reports_dir_root]:
                 if os.path.exists(reports_dir):
                     client_pattern = f"client_{scan.client_id}_scan_"
@@ -90,7 +89,7 @@ def download_report(id):
                         pdf_path = os.path.join(reports_dir, newest_file)
                         print(f"Found newest file: {pdf_path}")
                         
-                        # Update database with correct path
+                        # update database with correct path
                         project_root = os.path.dirname(base_dir)
                         rel_path = os.path.relpath(pdf_path, project_root)
                         scan.report_pdf = rel_path
@@ -100,7 +99,6 @@ def download_report(id):
             else:
                 return jsonify({'error': f'No PDF files found for client {scan.client_id}'}), 404
 
-        # Send the file
         filename = os.path.basename(pdf_path)
         print(f"Sending file: {pdf_path} with download name: {filename}")
         
@@ -111,7 +109,7 @@ def download_report(id):
             download_name=filename
         )
         
-        # Add headers to prevent caching
+        # add headers to prevent caching from browser -> to avoid looking for an older report
         response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
         
         return response
@@ -130,13 +128,12 @@ def check_latest_scan_status(client_id):
         if not latest_scan:
             return jsonify({'status': 'no_scan', 'message': 'No scans found for this client'}), 404
             
-        # Check if the scan record has a PDF path
+        # check if the scan record has a PDF path
         if latest_scan.report_pdf:
-            # IMPORTANT: Check if the file actually exists on disk
+            # IMPORTANT: check if the file actually exists on disk
             base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
             pdf_path = os.path.join(base_dir, latest_scan.report_pdf.replace('../', ''))
             
-            # Alternative paths to check
             alt_paths = [
                 pdf_path,
                 os.path.join(base_dir, latest_scan.report_pdf),

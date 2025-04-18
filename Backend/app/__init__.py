@@ -8,12 +8,11 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
-    # Initialize extensions
+    # initialize CORS
     CORS(app, resources={r"/api/*": {"origins": "*"}})
     db.init_app(app)
     Migrate(app, db)
     
-    # Register blueprints
     from .routes.client_routes import client_bp
     from .routes.scan_routes import scan_bp
     from .routes.event_routes import event_bp
@@ -26,7 +25,6 @@ def create_app():
     app.register_blueprint(ai_bp, url_prefix='/api/ai')
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     
-    # Create tables
     with app.app_context():
         db.create_all()
     
